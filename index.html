@@ -1,7 +1,2376 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>Do Not Find the Fox</title> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link rel="preconnect" href="https://unpkg.com" crossorigin> <script src="https://unpkg.com/@tsparticles/confetti@3.5.0/tsparticles.confetti.bundle.min.js" integrity="sha384-QfC9Q/nx1glZ5unSCk+a3OOT7zJDXvQVl2wbCr4tgrkiFAxQddG8+VxAyooQIMCh" crossorigin="anonymous" defer></script> <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap" rel="stylesheet"> <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" integrity="sha384-42kyIPf7HDYLkGffmxDhSx/3Z/53wGBs3nD6wEFxsbeDc7rMO6mkYbkAcpRsnMU2" crossorigin="anonymous"> <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png"> <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png"> <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png"> 
- <link rel="manifest" href="/site.webmanifest"> <style> *{ margin:0;padding:0;box-sizing:border-box;}body{ display:flex;justify-content:center;align-items:center;min-height:100vh;background-color:#f0f0f0;font-family:"Patrick Hand SC", cursive;font-weight:400;font-style:normal;flex-direction:column;}#board-container{ position:relative;width:90vw;max-width:500px;aspect-ratio:600 / 763;}.gameover{ cursor:pointer;}#board-and-tiles{ margin-top:1rem;display:flex;align-items:center;flex-direction:column;}#board-image{ position:absolute;top:0;left:0;width:100%;user-select:none;filter:drop-shadow(8px 8px 6px rgba(0, 0, 0, 0.5));}a{ color:#e9680a;}.btn{ border-width:0;padding:0.2rem 1rem 0.5rem 1rem;border-radius:2rem;font-size:1.5rem;color:#fff;background:#e9680a;font-family:"Patrick Hand SC", cursive;font-weight:400;font-style:normal;display:flex;align-items:end;flex-direction:row;cursor:pointer;margin:0 auto;}.btn.preo{ font-size:1.2rem;padding:0.2rem 0.8rem 0.3rem 0.8rem;}a.btn{ display:inline-block;text-decoration:none;}a.mbtn{ display:block;text-align:center;}a.mbtn:not(:last-child){ margin-bottom:.5rem;}.btn:hover{ background:#d83f03;}.btni{ font-size:3rem;display:inline-block;text-decoration:none;color:#e9680a;}.btni:hover{ color:#d83f03;}#copied{ padding:0.5rem;font-size:1rem;background:#ffebe2;margin-top:0.5rem;opacity:1;transition:opacity 3s ease;display:none;}#start-message, #end-message, #restart-message{ font-size:1.6rem;color:#333;text-align:center;padding:1rem;background:#fff;border-radius:0.3rem;line-height:1;}#start-message, #restart-message{ position:absolute;top:50%;left:54%;transform:translate(-50%, -50%);user-select:none;width:85%;}#restart-message{ display:none;top:15%;}#start-message.retry{ top:15%;}#end-message{ margin-top:1.5rem;max-width:90%;display:none;}#restart{ margin-top:1.5rem;display:none;}#tiles-container{ position:absolute;top:27.8%;left:23%;width:62%;height:48.75%;}.tiles{ display:flex;flex-wrap:wrap;width:100%;flex-direction:row;justify-content:center;margin:1rem 0;gap:0.5rem;filter:drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.6));}.b, .bs, .bd{ position:relative;width:2.1rem;height:2.1rem;background-image:url('./img/tiles.png');background-size:400% 500%;background-repeat:no-repeat;transform:none;z-index:1;}.b.clone{ pointer-events:none;}.b{ cursor:pointer;}.b:hover{ transform:rotate(1deg) scale(1.3) !important;rotate:0deg !important;z-index:999;filter:drop-shadow(4px 4px 5px rgba(0, 0, 0, 0.5));}.b1{ background-position:0% 100%;}.b2{ background-position:33.33% 100%;}.b3{ background-position:66.66% 100%;}.b4{ background-position:100% 100%;}.bd{ cursor:grab;}.t, .ts, .td{ position:absolute;width:24.5%;height:24.5%;background-image:url('./img/tiles.png');background-size:400% 500%;background-repeat:no-repeat;visibility:hidden;filter:drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.6));transform:translateX(2px) translateY(2px) rotate(-3deg);transition:transform 0.1s ease-out;}.ts, .td{ visibility:visible;background-image:none;}.ts:not(.placed){ cursor:pointer;}.ts.placed, .td.placed{ background-image:url('./img/tiles.png');}.ts:not(.placed):hover, .td:not(.placed).over{ background:rgba(0, 0, 0, 0.1);border-radius:33%;};.gameover .ts:not(.placed){ background:none !important;}.failed{ filter:brightness(1.2) drop-shadow(3px 5px 1px rgba(0, 0, 0, 0.8));animation:jiggle 0.3s;}@keyframes jiggle{ 0%{ transform:translate(1px, 1px) rotate(0deg);}10%{ transform:translate(-1px, -2px) rotate(-1deg);}20%{ transform:translate(-3px, 0px) rotate(1deg);}30%{ transform:translate(3px, 2px) rotate(0deg);}40%{ transform:translate(1px, -1px) rotate(1deg);}50%{ transform:translate(-1px, 2px) rotate(-1deg);}60%{ transform:translate(-3px, 1px) rotate(0deg);}70%{ transform:translate(3px, 1px) rotate(-1deg);}80%{ transform:translate(-1px, -1px) rotate(1deg);}90%{ transform:translate(1px, 2px) rotate(0deg);}100%{ transform:translate(1px, -2px) rotate(-1deg);}}.t1{ top:0%;left:0%;}.t2{ top:0%;left:25%;}.t3{ top:0%;left:50%;}.t4{ top:0%;left:75%;}.t5{ top:25%;left:0%;}.t6{ top:25%;left:25%;}.t7{ top:25%;left:50%;}.t8{ top:25%;left:75%;}.t9{ top:50%;left:0%;}.t10{ top:50%;left:25%;}.t11{ top:50%;left:50%;}.t12{ top:50%;left:75%;}.t13{ top:75%;left:0%;}.t14{ top:75%;left:25%;}.t15{ top:75%;left:50%;}.t16{ top:75%;left:75%;}.x1{ background-position:0% 0%;}.x2{ background-position:33.33% 0%;}.o1{ background-position:66.66% 0%;}.x3{ background-position:100% 0%;}.x4{ background-position:0% 25%;}.x5{ background-position:33.33% 25%;}.o2{ background-position:66.66% 25%;}.o3{ background-position:100% 25%;}.o4{ background-position:0% 50%;}.o5{ background-position:33.33% 50%;}.o6{ background-position:66.66% 50%;}.f1{ background-position:100% 50%;}.f2{ background-position:0% 75%;}.f3{ background-position:33.33% 75%;}.f4{ background-position:66.66% 75%;}.f5{ background-position:100% 75%;}.wild{ background-image:url('./img/tiles2b.png') !important;background-position:0% 0%;}#attempts{ position:absolute;top:84.5%;left:64.5%;width:32%;height:13%;overflow:visible;}.tally{ position:relative;width:25%;aspect-ratio:92 / 72;display:inline-block;}.mark{ position:absolute;top:0;left:0;width:100%;height:100%;user-select:none;background-image:url('./img/ticks.png');background-size:500% 100%;background-repeat:no-repeat;}.mark.hidden{ display:none;}.mark1{ background-position:0% 0%;}.mark2{ background-position:25% 0%;}.mark3{ background-position:50% 0%;}.mark4{ background-position:75% 0%;}.mark5{ background-position:100% 0%;}.hi{ font-size:1.3rem;margin-top:1rem;}.there{ display:flex;align-items:center;gap:0.5rem;}.me{ width:2.4rem;height:2.4rem;border-radius:1.2rem;}.plshelp{ margin-top:1.5rem;margin-bottom:2rem;font-size:1.1rem;color:#333;text-align:center;background:#f9f9f9;border-radius:0.3rem;line-height:1;width:95%;max-width:600px;}.prettypls, .outsideuk{ padding:0 1rem;margin:1rem 0;font-family:sans-serif;text-align:left;}.outsideuk{ font-size:0.8rem;}.buythisone, .orthisone{ display:flex;flex-direction:column;align-items:center;text-align:left;margin-bottom:1rem;}.orthisone{ flex-direction:column-reverse;}.buythisone img, .orthisone img{ max-width:260px;margin-bottom:0.5rem;}.itrlyhelps{ padding:0 1rem;}.itrlyhelps:first-child{ text-align:right;}.buythisone h2, .orthisone h2{ text-align:left;}.thisbookisinsane{ display:block;font-family:sans-serif;text-align:left;margin-bottom:1rem;font-size:0.9rem;}.orpleasefollowmelol{ text-align:center;font-size:1.6rem;margin:2rem 0;}.youtube-video{ aspect-ratio:16 / 9;width:100%;max-width:560px;}.lboardw{ margin:1rem 0;width:90%;max-width:400px;text-align:center;}.lboards{ display:flex;flex-direction:row;gap:0.25rem;}.lboardv{ flex-grow:1;max-width:50%;}.lboard{ width:100%;margin:0 auto;min-height:20rem;background-color:#e4e2dc;border:1px solid #909090;filter:drop-shadow(4px 2px 3px rgba(0, 0, 0, 0.3));border-radius:0.5rem;}.lboardw > h3{ font-size:1.5rem;margin-bottom:0.25rem;}.lboarde{ width:100%;height:2.2rem;display:flex;align-items:center;font-size:1rem;text-transform:uppercase;gap:0.3rem;padding:0.5rem;border-bottom:1px dashed #989898;}.lboarde > img{ max-height:1rem;}.lboarde > span{ text-overflow:ellipsis;overflow:hidden;text-wrap:nowrap;}.lbs{ font-size:1.2rem;width:2rem;height:2rem;border-radius:1rem;background-color:#d9d1c1;display:flex;align-items:center;justify-content:center;}.lboarde:nth-child(1) > .lbs{ font-size:1.5rem;background-color:#f9cf00;filter:drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));}.lboarde:nth-child(2) > .lbs{ font-size:1.5rem;background-color:#9c9c99;filter:drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));}.lboarde:nth-child(3) > .lbs{ font-size:1.5rem;background-color:#9b8577;filter:drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));}.submiths{ background:#e4e2dc;padding:0.75rem;border-radius:0.5rem;margin-bottom:1rem;display:none;}.submitfm{ display:grid;grid-template-columns:20% 80%;grid-gap:0.25rem;margin:0.5rem 0;text-align:left;}.hsinp{ padding:0.2rem;font-size:1.2rem;}.modes{ text-align:center;margin-top:1.25rem;}.modes > h3{ font-size:1.5rem;font-weight:normal;}.gml{ }.gml.selected{ opacity:0.5;cursor:default;}.gml > img{ width:7rem;height:auto;}.gml:not(.selected) > img{ border:2px solid #2e2e2e;border-radius:0.5rem;}.gml:hover > img{ border-color:#683636;}.advent-title{ color:#d1dbf1;font-weight:normal;font-size:1.1rem;width:20%;position:absolute;left:60.5%;top:9.8%;height:5%;display:flex;align-items:center;justify-content:left;filter:drop-shadow(2px 1px 4px #061a5b);user-select:none;}.advent-ad{ width:500px;max-width:100%;margin-bottom:-1.5rem;user-select:none;height:auto;}@media (orientation:landscape){ #board-and-tiles{ flex-direction:row;max-width:70%;}.tiles{ flex-direction:column;height:auto;width:auto;margin:0 1rem;}}@media screen and (min-width:380px){ .b, .bs, .bd{ width:2.5rem;height:2.5rem;}}@media screen and (min-width:500px){ .b, .bs, .bd{ width:3rem;height:3rem;}#start-message, #restart-message{ width:55%;}.buythisone, .orthisone{ flex-direction:row;}.buythisone img, .orthisone img{ margin-bottom:0;}.lboarde > img{ max-height:1.5rem;}.lboarde{ gap:0.5rem;font-size:1.3rem;}.advent-title{ font-size:1.7rem;}}@media screen and (min-width:800px){ #board-and-tiles{ flex-direction:row;}.tiles{ flex-direction:column;height:auto;width:auto;margin:0 1rem;}.b, .bs, .bd{ width:4rem;height:4rem;}.hi{ font-size:1.8rem;margin-top:1.3rem;}.lboardw{ margin-top:3rem;}}@media (orientation:landscape) and (max-height:400px){ .b{ width:2.2rem;height:2.2rem;}}.header{ display:flex;justify-content:space-between;width:100%;max-width:450px;margin:0.75rem 0;padding:0 0.75rem;}.acbtn{ width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center;text-decoration:none;background:#cbcbcb;border-radius:50%;font-size:1.3rem;position:relative;}#acnotif{ position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:6px;background:#ff4700;display:none;}.acbtn > i{ color:#7b7b7b;}.modalbg{ position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0, 0, 0, 0.5);justify-content:center;align-items:center;z-index:999;visibility:hidden;opacity:0;display:flex;transition:opacity 0.3s ease, visibility 0.3s ease;}.modal{ background:#fff;padding:20px;border-radius:8px;box-shadow:0 4px 10px rgba(0, 0, 0, 0.2);width:400px;max-width:90%;transform:translateY(-100px);opacity:0;transition:transform 0.3s ease, opacity 0.3s ease;}.cbtn{ background:none;border:none;font-size:1.5rem;position:absolute;top:10px;right:10px;cursor:pointer;}.modalbg.active{ visibility:visible;opacity:1;}.modalbg.active .modal{ transform:translateY(0);opacity:1;}.ac-list{ margin-top:0.5rem;max-height:60vh;overflow-y:auto;}.ach{ border:1px solid #ccc;display:flex;gap:0.75rem;padding:0.25rem;margin-bottom:0.5rem;border-radius:0.5rem;opacity:0.5;}.ach.got{ border-color:rgba(69, 244, 69, 0.6);background-color:#edffc3;opacity:1;}.ach-txt{ flex-grow:1;}.ach-icon{ width:2rem;height:2rem;display:flex;align-items:center;justify-content:center;margin-top:0.25rem;margin-left:0.25rem;border:1px solid #000000;background:#000000;color:#ffffff;opacity:0.5;flex-shrink:0;}.ach-bob{ background:#db0000;}.ach.got > .ach-icon{ border-width:0;opacity:1;box-shadow:0px 0px 2px 1px rgba(69, 244, 69, 0.6), 0px 0px 16px 1px rgba(69, 244, 69, 0.4);}.ach.got > .ach-bob{ box-shadow:0px 0px 2px 1px rgb(244 69 69 / 60%), 0px 0px 16px 1px rgb(244 69 69 / 40%);}.ach-icon > .bx{ font-size:1.5rem;}.ach-pop{ position:absolute;bottom:0;margin-bottom:1rem;pointer-events:none;animation:achUp 1s ease 1;}@keyframes achUp{ 0%{transform:translateY(3rem);opacity:0;}100%{transform:none;opacity:1;}}#itemrack{ display:flex;gap:0.5rem;position:absolute;top:95%;left:16%;}.itemri{ cursor:pointer;}.itemri.disabled{ filter:saturate(0);}</style> <script>!function(e,t,n,s,c,a,i){e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},a=t.createElement(n),a.async=1,a.src="https://assets.mailerlite.com/js/universal.js",i=t.getElementsByTagName(n)[0],i.parentNode.insertBefore(a,i)}(window,document,"script",0,"ml"),ml("account","1104866");</script> </head> <body> <!-- <img class="advent-ad" src="./img/advent.png" width="500" height="153" draggable="false" /> --> <div class="header"> <a href="#" class="acbtn" id="mnOpen"> <i class="bx bx-menu"></i> </a> <a href="#" class="acbtn" id="acOpen"> <div id="acnotif"></div> <i class="bx bxs-trophy"></i> </a> </div> <div id="board-and-tiles"> <div class="tiles" id="tiles1"> <div class="b b2"></div> <div class="b b3"></div> <div class="b b4"></div> <div class="b b4"></div> <div class="b b4"></div> <div class="b b3"></div> <div class="b b2"></div> <div class="b b1"></div> </div> <div id="board-container"> <img id="board-image" src="./img/board.png" alt="Board"> <div id="tiles-container"> <!-- Tiles without initial tile type classes --> <div class="t t1" id="t1"></div> <div class="t t2" id="t2"></div> <div class="t t3" id="t3"></div> <div class="t t4" id="t4"></div> <div class="t t5" id="t5"></div> <div class="t t6" id="t6"></div> <div class="t t7" id="t7"></div> <div class="t t8" id="t8"></div> <div class="t t9" id="t9"></div> <div class="t t10" id="t10"></div> <div class="t t11" id="t11"></div> <div class="t t12" id="t12"></div> <div class="t t13" id="t13"></div> <div class="t t14" id="t14"></div> <div class="t t15" id="t15"></div> <div class="t t16" id="t16"></div> </div> <div id="attempts"></div> <div id="start-message">Place the tiles without making the word "FOX" in any direction.<br><br>Tap a tile to play.</div> </div> <div class="tiles" id="tiles2"> <div class="b b1"></div> <div class="b b2"></div> <div class="b b1"></div> <div class="b b3"></div> <div class="b b4"></div> <div class="b b3"></div> <div class="b b2"></div> <div class="b b4"></div> </div> </div> <div id="end-message"> You did it!<br><br> You managed to avoid the fox after <span id="result">27</span>.<br><br> <span id="compare"></span><br><br> <div class="submiths"> Your streak qualifies for the leaderboard:<br> <div class="submitfm"> <span>Flag:</span><select id="countryinp" class="hsinp" type="text"></select> <span>Name:</span><input id="hsname" class="hsinp" type="text" maxlength="12"> </div> <div class="hserr"></div> <button class="btn" id="submitlb">Submit Score</button> </div> <button class="btn" id="share"><i class="bx bx-share-alt"></i> Share</button> <div id="copied">TEXT HAS BEEN COPIED TO YOUR CLIPBOARD</div> </div> <button id="restart" class="btn"> LET ME TRY AGAIN </button> <div class="lboardw"> <h3>Most Attempts to Not Find The Fox</h3> <div class="lboards"> <div class="lboardv"> <h4>TODAY</h4> <div class="lboard" data-time="today"> </div> </div> <div class="lboardv"> <h4>RECENT</h4> <div class="lboard" data-time="alltime"> </div> </div> </div> </div> <div class="hi"> <div class="there"> <img class="me" src="./img/avatar.jpg" alt="A picture of Alex Cheddar"> A game by <a href="https://www.youtube.com/@AlexCheddarUK">Alex Cheddar</a> </div> </div> <div class="plshelp"> <div class="prettypls"> If you would like to thank or support me, I made two very silly and absurdly difficult word search books which are <strong>out now</strong>. </div> <div class="buythisone"> <img src="./img/ftf.png" alt="Find the Fox: An Almost Impossible Word Search"> <div class="itrlyhelps"> <h2>FIND THE FOX</h2><br> <span class="thisbookisinsane"> One simple challenge: 200 pages of grids, and the word FOX appears just <strong>once</strong>. A perfect gift for someone with too much time on their hands, or that friend who thinks they're <em>so</em> clever. </span> <a class="btn preo" href="https://amzn.to/3ZseP3N">Amazon</a> <a class="btn preo" href="https://www.waterstones.com/book/find-the-fox/alex-cheddar/9781788405942">Waterstones</a> <a class="btn preo" href="https://blackwells.co.uk/bookshop/product/Find-the-Fox-by-Alex-Cheddar/9781788405942">Blackwells</a> </div> </div> <div class="orthisone"> <div class="itrlyhelps"> <h2>20,000 COWS!</h2><br> <span class="thisbookisinsane"> On page 1, there is one "COW" to find. On page 2, there are two. On page 200, you are faced with the task of finding 200 cows. In total that's <strong>just over 20,000 cows</strong> to find. Can you beat this cowlossal challenge? </span> <a class="btn preo" href="https://amzn.to/47qJeBB">Amazon</a> <a class="btn preo" href="https://www.waterstones.com/book/20-000-cows/alex-cheddar/9781788405959">Waterstones</a> <a class="btn preo" href="https://blackwells.co.uk/bookshop/product/20000-Cows-by-Alex-Cheddar/9781788405959">Blackwells</a> </div> <img src="./img/20kc.png" alt="20,000 Cows!: An Almost Impossible Word Search"> </div> <div class="prettypls"> <div class="ml-embedded" data-form="iIyWV7"></div> </div> </div> <div class="orpleasefollowmelol"> I've made a <a href="https://www.youtube.com/@AlexCheddarUK">video</a> analysing the chances of winning (or not winning) this game: </div> <iframe class="youtube-video" width="560" height="315" src="https://www.youtube.com/embed/6jovMx_c1SU?si=Ot_rP09xwnrtL7_L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> <div class="orpleasefollowmelol"> I'm cooking up more games! Follow me if you want updates:<br> <a class="btni" href="https://www.youtube.com/@AlexCheddarUK"><i class="bx bxl-youtube"></i></a> <a class="btni" href="https://www.instagram.com/a.cheddar/"><i class="bx bxl-instagram-alt"></i></a> <a class="btni" href="https://www.tiktok.com/@a.cheddar"><i class="bx bxl-tiktok"></i></a> <a class="btni" href="https://www.facebook.com/people/Alex-Cheddar/61563365097458/"><i class="bx bxl-facebook-circle"></i></a> </div> <div class="orpleasefollowmelol"> Flags by <a href="https://flagpedia.net/">Flagpedia</a> </div> <div id="acOver" class="modalbg"> <div class="modal"> <button id="acClose" class="cbtn">&times;</button> <h2>Achievements</h2> <div class="ac-list" id="acList"> </div> </div> </div> <div id="mnOver" class="modalbg"> <div class="modal"> <button id="mnClose" class="cbtn">&times;</button> <a class="btn mbtn" href="/classic">Classic</a> <a class="btn mbtn" href="/oooo">OOOO</a> <a class="btn mbtn" href="/dice/level1">Dice Game: Level 1</a> <a class="btn mbtn" href="/advent">Advent 2024</a> </div> </div> <script>var d=window.Dnftf=function(){this.directions=[{dx:-1,dy:0},{dx:-1,dy:1},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:0},{dx:1,dy:-1},{dx:0,dy:-1},{dx:-1,dy:-1}];this.attemptsDiv=document.getElementById("attempts")};d.prototype.prng=function(a){return function(){a|=0;a=a+2654435769|0;let t=a^a>>>16;t=Math.imul(t,569420461);t=t^t>>>15;t=Math.imul(t,1935289751);return((t=t^t>>>15)>>>0)/4294967296}};d.prototype.shuffle=function(array,rng){rng=rng||Math.random;for(let i=array.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[array[i],array[j]]=[array[j],array[i]]}};d.prototype.checkForFox=function(boardState,wordsToCheck){const sequencesFound=[];const boardHeight=boardState.length;const boardWidth=boardState[0].length;for(let i=0;i<boardHeight;i++){for(let j=0;j<boardWidth;j++){if(!boardState[i][j])continue;for(let dir=0;dir<this.directions.length;dir++){const dx=this.directions[dir].dx;const dy=this.directions[dir].dy;const positions=[{row:i,col:j}];let word=boardState[i][j];for(let step=1;step<3;step++){const newRow=i+dx*step;const newCol=j+dy*step;if(newRow>=0&&newRow<boardHeight&&newCol>=0&&newCol<boardWidth){const nextLetter=boardState[newRow][newCol];if(!nextLetter)break;word+=nextLetter;positions.push({row:newRow,col:newCol})}else{break}}if(word.length===3&&wordsToCheck.includes(word)){sequencesFound.push(positions)}}}}return sequencesFound};d.prototype.resetTally=function(){this.attemptsDiv.innerHTML=""};d.prototype.incrementTally=function(){this.incrementTallyFor(this.attemptsDiv)};d.prototype.incrementTallyFor=function(el){const tallies=el.getElementsByClassName("tally");let currentTally;if(tallies.length===0){currentTally=this.createNewTally();el.appendChild(currentTally)}else{currentTally=tallies[tallies.length-1]}const marks=currentTally.getElementsByClassName("mark");let marksVisible=0;for(let i=0;i<marks.length;i++){if(!marks[i].classList.contains("hidden")){marksVisible++}}if(marksVisible<5){marks[marksVisible].classList.remove("hidden")}else{currentTally=this.createNewTally();el.appendChild(currentTally);currentTally.getElementsByClassName("mark")[0].classList.remove("hidden")}};d.prototype.createNewTally=function(){const tally=document.createElement("div");tally.className="tally";for(let i=1;i<=5;i++){const mark=document.createElement("div");mark.className=`mark mark${i} hidden`;const jiggleY=Math.floor(Math.random()*5)-2;const jiggleRot=Math.floor(Math.random()*3)-1;mark.style.transform=`rotate(${jiggleRot}deg) translateY(${jiggleY}px)`;tally.appendChild(mark)}return tally};d.prototype.jiggle=function(tile){const jiggleX=Math.floor(Math.random()*5)-1;const jiggleY=Math.floor(Math.random()*5)-1;const jiggleRot=Math.floor(Math.random()*5)-2;tile.style.transform=`rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`};d.prototype.confetti=function(){function fire(particleRatio,opts){confetti(Object.assign({},{origin:{y:.7}},opts,{particleCount:Math.floor(200*particleRatio)}))}fire(.25,{spread:26,startVelocity:55});fire(.2,{spread:60});fire(.35,{spread:100,decay:.91,scalar:.8});fire(.1,{spread:120,startVelocity:25,decay:.92,scalar:1.2});fire(.1,{spread:120,startVelocity:45})};d.prototype.dup1d=function(arr){return arr.slice()};d.prototype.dup2d=function(arr){var dup=[];for(var i=0;i<arr.length;i++){dup[i]=arr[i].slice()}return dup};d.prototype.setShareText=function(text){this.textToShare=text};d.prototype.isMobileDevice=function(){return/Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)};d.prototype.setupShareButton=function(){const self=this;const compareText=document.getElementById("compare");const shareButton=document.getElementById("share");const copiedDiv=document.getElementById("copied");shareButton.addEventListener("click",(function(){if(self.isMobileDevice()&&navigator.share){navigator.share({text:self.textToShare,url:"https://donotfindthefox.com"})}else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(`${self.textToShare}. Try it at www.donotfindthefox.com`).then((function(){copiedDiv.style.display="block";copiedDiv.style.opacity=1;setTimeout((function(){copiedDiv.style.opacity=0}),250);setTimeout((function(){copiedDiv.style.display="none"}),3e3)}))}}))};d.prototype.checkFull=function(boardState){const boardSize=boardState[0].length;for(let i=0;i<boardState.length;i++){for(let j=0;j<boardSize;j++){if(boardState[i][j]==null)return false}}return true};
-</script> <script>var d=window.Dnftf;d.achievementsKey="dnftf-achievements";d.prototype.getAchievements=function(){var ach=localStorage.getItem(d.achievementsKey);if(!ach){localStorage.setItem(d.achievementsKey,JSON.stringify({}));ach=localStorage.getItem(d.achievementsKey)}return JSON.parse(ach)};d.prototype.saveAchievements=function(achievements){localStorage.setItem(d.achievementsKey,JSON.stringify(achievements))};d.prototype.unlockAchievement=function(key){this.achievementModalStale=true;const achievements=this.getAchievements();if(achievements[key])return;const now=(new Date).toISOString();achievements[key]={got:now};this.saveAchievements(achievements);document.getElementById("acnotif").style.display="block";this.achievementPopup(key)};d.prototype.achievementPopup=async function(key){try{const acList=document.getElementById("acList");const achievements=this.getAchievements();const data=await this.fetchAchievementsData();const popup=document.createElement("div");popup.className="ach-pop";const achElement=document.createElement("div");achElement.className="ach got";const iconElement=document.createElement("div");iconElement.className="ach-icon";iconElement.innerHTML=`<i class="bx ${data[key].icon}"></i>`;const textElement=document.createElement("div");textElement.className="ach-txt";textElement.innerHTML=`<h4>${data[key].title}</h4><p>${data[key].desc}</p>`;achElement.appendChild(iconElement);achElement.appendChild(textElement);popup.appendChild(achElement);document.body.appendChild(popup);setTimeout((()=>{popup.remove()}),5e3)}catch(error){console.error("Error creating achievement alert:",error)}};d.prototype.hasAchievement=function(achievements,key){return!!achievements[key]};d.prototype.wipeAchievements=function(){localStorage.clear()};d.prototype.fetchAchievementsData=async function(){try{const response=await fetch("/achievements");if(!response.ok){throw new Error(`Failed to fetch achievements: ${response.statusText}`)}return await response.json()}catch(error){console.error("Error fetching achievements data:",error);throw error}};d.prototype.populateAchievements=async function(){try{const acList=document.getElementById("acList");const achievements=this.getAchievements();const data=await this.fetchAchievementsData();acList.innerHTML="";for(const[key,value]of Object.entries(data)){if(value.bob&&!this.hasItem("trophy"))continue;const achievementElement=document.createElement("div");achievementElement.classList.add("ach");if(this.hasAchievement(achievements,key)){achievementElement.classList.add("got")}const iconElement=document.createElement("div");iconElement.classList.add("ach-icon");if(value.bob)iconElement.classList.add("ach-bob");iconElement.innerHTML=`<i class='bx ${value.icon||"bxs-trophy"}'></i>`;const textElement=document.createElement("div");textElement.classList.add("ach-txt");textElement.innerHTML=`\n        <h4>${value.title}</h4>\n        <p>${value.desc}</p>\n      `;achievementElement.appendChild(iconElement);achievementElement.appendChild(textElement);acList.appendChild(achievementElement)}this.achievementModalStale=false}catch(error){console.error("Error populating achievements:",error)}};d.prototype.setupHeader=function(){const self=this;const acOpen=document.getElementById("acOpen");const acClose=document.getElementById("acClose");const acOver=document.getElementById("acOver");this.achievementModalStale=true;acOpen.addEventListener("click",(()=>{acOver.classList.add("active");if(self.achievementModalStale){self.populateAchievements()}document.getElementById("acnotif").style.display="none"}));acClose.addEventListener("click",(()=>{acOver.classList.remove("active")}));acOver.addEventListener("click",(e=>{if(e.target===acOver){acOver.classList.remove("active")}}));const mnOpen=document.getElementById("mnOpen");const mnClose=document.getElementById("mnClose");const mnOver=document.getElementById("mnOver");mnOpen.addEventListener("click",(()=>{mnOver.classList.add("active")}));mnClose.addEventListener("click",(()=>{mnOver.classList.remove("active")}));mnOver.addEventListener("click",(e=>{if(e.target===mnOver){mnOver.classList.remove("active")}}))};d.prototype.buyItem=function(itemId){localStorage.setItem("shop:"+itemId,"true");this.achievementModalStale=true;this.hasItemCache[itemId]=true;this.enabledItems[itemId]=true;if(this.itemRack[itemId]){this.itemRack[itemId].style.display="block";this.itemRack[itemId].classList.remove("disabled")}};d.prototype.hasItem=function(itemId){this.hasItemCache={};if(!this.hasItemCache[itemId])this.hasItemCache[itemId]=localStorage.getItem("shop:"+itemId)==="true";return this.hasItemCache[itemId]};d.prototype.hasItemAndEnabled=function(itemId){this.enabledItems=this.enabledItems||{};return this.enabledItems[itemId]&&this.hasItem(itemId)};d.prototype.disableItem=function(itemId){this.enabledItems=this.enabledItems||{};this.enabledItems[itemId]=false;this.itemRack[itemId].classList.add("disabled")};d.prototype.enableItem=function(itemId){this.enabledItems=this.enabledItems||{};this.enabledItems[itemId]=true;this.itemRack[itemId].classList.remove("disabled")};d.prototype.setupItemRack=function(){this.enabledItems=this.enabledItems||{};this.itemRack={};const self=this;const itemRackEl=document.getElementById("itemrack");itemRackEl.querySelectorAll(".itemri").forEach((function(item){self.itemRack[item.dataset.itemrack]=item;if(!self.hasItem(item.dataset.itemrack))item.style.display="none";if(self.enabledItems[item.dataset.itemrack]){item.classList.remove("disabled")}else{item.classList.add("disabled")}item.addEventListener("click",(function(e){if(self.enabledItems[item.dataset.itemrack]){self.disableItem(item.dataset.itemrack)}else{self.enableItem(item.dataset.itemrack)}e.stopPropagation()}))}))};
-</script> <script>var d=window.Dnftf;d.prototype.postResult=function(game,stat,score){const highscoreData={game:game,stat:stat,score:score};fetch("/result",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(highscoreData)}).then((response=>{if(!response.ok){throw new Error(`HTTP error! status: ${response.status}`)}return response.json()})).catch((error=>{console.error("Error submitting result:",error)}))};
-</script> <script>document.addEventListener("DOMContentLoaded",(function(){const boardSize=4;const successChance=.1265;var d=new window.Dnftf;let textToShare="";let tileTypes=["f1","f2","f3","f4","f5","x1","x2","x3","x4","x5","o1","o2","o3","o4","o5","o6"];let placedTiles=[];let gameHistory=[];let lbThreshold=undefined;const countries={ad:"Andorra",ae:"United Arab Emirates",af:"Afghanistan",ag:"Antigua and Barbuda",ai:"Anguilla",al:"Albania",am:"Armenia",ao:"Angola",aq:"Antarctica",ar:"Argentina",as:"American Samoa",at:"Austria",au:"Australia",aw:"Aruba",ax:"Åland Islands",az:"Azerbaijan",ba:"Bosnia and Herzegovina",bb:"Barbados",bd:"Bangladesh",be:"Belgium",bf:"Burkina Faso",bg:"Bulgaria",bh:"Bahrain",bi:"Burundi",bj:"Benin",bl:"Saint Barthélemy",bm:"Bermuda",bn:"Brunei",bo:"Bolivia",bq:"Caribbean Netherlands",br:"Brazil",bs:"Bahamas",bt:"Bhutan",bv:"Bouvet Island",bw:"Botswana",by:"Belarus",bz:"Belize",ca:"Canada",cc:"Cocos (Keeling) Islands",cd:"DR Congo",cf:"Central African Republic",cg:"Republic of the Congo",ch:"Switzerland",ci:"Côte d'Ivoire (Ivory Coast)",ck:"Cook Islands",cl:"Chile",cm:"Cameroon",cn:"China",co:"Colombia",cr:"Costa Rica",cu:"Cuba",cv:"Cape Verde",cw:"Curaçao",cx:"Christmas Island",cy:"Cyprus",cz:"Czechia",de:"Germany",dj:"Djibouti",dk:"Denmark",dm:"Dominica",do:"Dominican Republic",dz:"Algeria",ec:"Ecuador",ee:"Estonia",eg:"Egypt",eh:"Western Sahara",er:"Eritrea",es:"Spain",et:"Ethiopia",eu:"European Union",fi:"Finland",fj:"Fiji",fk:"Falkland Islands",fm:"Micronesia",fo:"Faroe Islands",fr:"France",ga:"Gabon",gb:"United Kingdom",ag:"Antigua",gd:"Grenada",ge:"Georgia",gf:"French Guiana",gg:"Guernsey",gh:"Ghana",gi:"Gibraltar",gl:"Greenland",gm:"Gambia",gn:"Guinea",gp:"Guadeloupe",gq:"Equatorial Guinea",gr:"Greece",gs:"South Georgia",gt:"Guatemala",gu:"Guam",gw:"Guinea-Bissau",gy:"Guyana",hk:"Hong Kong",hm:"Heard Island and McDonald Islands",hn:"Honduras",hr:"Croatia",ht:"Haiti",hu:"Hungary",id:"Indonesia",ie:"Ireland",il:"Israel",im:"Isle of Man",in:"India",io:"British Indian Ocean Territory",iq:"Iraq",ir:"Iran",is:"Iceland",it:"Italy",je:"Jersey",jm:"Jamaica",jo:"Jordan",jp:"Japan",ke:"Kenya",kg:"Kyrgyzstan",kh:"Cambodia",ki:"Kiribati",km:"Comoros",kn:"Saint Kitts and Nevis",kp:"North Korea",kr:"South Korea",kw:"Kuwait",ky:"Cayman Islands",kz:"Kazakhstan",la:"Laos",lb:"Lebanon",lc:"Saint Lucia",li:"Liechtenstein",lk:"Sri Lanka",lr:"Liberia",ls:"Lesotho",lt:"Lithuania",lu:"Luxembourg",lv:"Latvia",ly:"Libya",ma:"Morocco",mc:"Monaco",md:"Moldova",me:"Montenegro",mf:"Saint Martin",mg:"Madagascar",mh:"Marshall Islands",mk:"North Macedonia",ml:"Mali",mm:"Myanmar",mn:"Mongolia",mo:"Macau",mp:"Northern Mariana Islands",mq:"Martinique",mr:"Mauritania",ms:"Montserrat",mt:"Malta",mu:"Mauritius",mv:"Maldives",mw:"Malawi",mx:"Mexico",my:"Malaysia",mz:"Mozambique",na:"Namibia",nc:"New Caledonia",ne:"Niger",nf:"Norfolk Island",ng:"Nigeria",ni:"Nicaragua",nl:"Netherlands",no:"Norway",np:"Nepal",nr:"Nauru",nu:"Niue",nz:"New Zealand",om:"Oman",pa:"Panama",pe:"Peru",pf:"French Polynesia",pg:"Papua New Guinea",ph:"Philippines",pk:"Pakistan",pl:"Poland",pm:"Saint Pierre and Miquelon",pn:"Pitcairn Islands",pr:"Puerto Rico",ps:"Palestine",pt:"Portugal",pw:"Palau",py:"Paraguay",qa:"Qatar",re:"Réunion",ro:"Romania",rs:"Serbia",ru:"Russia",rw:"Rwanda",sa:"Saudi Arabia",sb:"Solomon Islands",sc:"Seychelles",sd:"Sudan",se:"Sweden",sg:"Singapore",sh:"Saint Helena, Ascension and Tristan da Cunha",si:"Slovenia",sj:"Svalbard and Jan Mayen",sk:"Slovakia",sl:"Sierra Leone",sm:"San Marino",sn:"Senegal",so:"Somalia",sr:"Suriname",ss:"South Sudan",st:"São Tomé and Príncipe",sv:"El Salvador",sx:"Sint Maarten",sy:"Syria",sz:"Eswatini (Swaziland)",tc:"Turks and Caicos Islands",td:"Chad",tf:"French Southern and Antarctic Lands",tg:"Togo",th:"Thailand",tj:"Tajikistan",tk:"Tokelau",tl:"Timor-Leste",tm:"Turkmenistan",tn:"Tunisia",to:"Tonga",tr:"Turkey",tt:"Trinidad and Tobago",tv:"Tuvalu",tw:"Taiwan",tz:"Tanzania",ua:"Ukraine",ug:"Uganda",um:"United States Minor Outlying Islands",un:"United Nations",us:"United States",uy:"Uruguay",uz:"Uzbekistan",va:"Vatican City (Holy See)",vc:"Saint Vincent and the Grenadines",ve:"Venezuela",vg:"British Virgin Islands",vi:"United States Virgin Islands",vn:"Vietnam",vu:"Vanuatu",wf:"Wallis and Futuna",ws:"Samoa",xk:"Kosovo",ye:"Yemen",yt:"Mayotte",za:"South Africa",zm:"Zambia",zw:"Zimbabwe"};function splitmix32(a){return function(){a|=0;a=a+2654435769|0;let t=a^a>>>16;t=Math.imul(t,569420461);t=t^t>>>15;t=Math.imul(t,1935289751);return((t=t^t>>>15)>>>0)/4294967296}}let nextSeed=undefined;function shuffle(array){const seed=nextSeed===undefined?Math.floor(Math.random()*4294967296):nextSeed;gameHistory.push({seed:seed,moves:[]});const prng=splitmix32(seed);nextSeed=Math.floor(prng()*4294967296);for(let i=array.length-1;i>0;i--){const j=Math.floor(prng()*(i+1));[array[i],array[j]]=[array[j],array[i]]}}shuffle(tileTypes);let currentTileIndex=0;let totalAttempts=0;const totalTiles=boardSize*boardSize;let gameOver=false;const startMessage=document.getElementById("start-message");const endMessage=document.getElementById("end-message");const boardContainer=document.getElementById("board-container");const attemptsDiv=document.getElementById("attempts");const backwardsTiles=document.querySelectorAll(".b");const resultText=document.getElementById("result");const compareText=document.getElementById("compare");const shareButton=document.getElementById("share");const copiedDiv=document.getElementById("copied");const restartBtn=document.getElementById("restart");const submitForm=document.querySelector(".submiths");backwardsTiles.forEach((function(el,i){el.dataset.tileIndex=i}));let boardState=[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]];const directions=[{dx:-1,dy:0},{dx:-1,dy:1},{dx:0,dy:1},{dx:1,dy:1},{dx:1,dy:0},{dx:1,dy:-1},{dx:0,dy:-1},{dx:-1,dy:-1}];function checkForFox(boardState){const sequencesFound=[];const wordsToCheck=["FOX","XOF"];for(let i=0;i<boardSize;i++){for(let j=0;j<boardSize;j++){if(!boardState[i][j])continue;for(let dir=0;dir<directions.length;dir++){const dx=directions[dir].dx;const dy=directions[dir].dy;const positions=[{row:i,col:j}];let word=boardState[i][j];for(let step=1;step<3;step++){const newRow=i+dx*step;const newCol=j+dy*step;if(newRow>=0&&newRow<boardSize&&newCol>=0&&newCol<boardSize){const nextLetter=boardState[newRow][newCol];if(!nextLetter)break;word+=nextLetter;positions.push({row:newRow,col:newCol})}else{break}}if(word.length===3&&wordsToCheck.includes(word)){sequencesFound.push(positions)}}}}return sequencesFound}function randomiseBackwardsTiles(){backwardsTiles.forEach((function(el){const jiggleX=Math.floor(Math.random()*5)-2;const jiggleY=Math.floor(Math.random()*5)-2;const jiggleRot=Math.floor(Math.random()*15)-7;el.style.transform=`rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`;const rotate=[0,90,-90,180][Math.floor(Math.random()*4)];el.style.rotate=`${rotate}deg`;el.style.visibility="visible";if(el.dataset.flippedTo){el.classList.remove(el.dataset.flippedTo);delete el.dataset.flippedTo}}))}function resetGame(){placedTiles=[];currentTileIndex=0;gameOver=false;textToShare="";tileTypes=["f1","f2","f3","f4","f5","x1","x2","x3","x4","x5","o1","o2","o3","o4","o5","o6"];shuffle(tileTypes);randomiseBackwardsTiles();boardState=[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]];for(let i=1;i<=totalTiles;i++){const tile=document.getElementById("t"+i);tile.className="t t"+i;tile.style.visibility="hidden";tile.style.transform=""}startMessage.style.display="none";endMessage.style.display="none";submitForm.style.display="none";document.querySelector(".hserr").textContent="";boardContainer.classList.remove("gameover");incrementTally()}function incrementTally(){totalAttempts+=1;const tallies=attemptsDiv.getElementsByClassName("tally");let currentTally;if(tallies.length===0){currentTally=createNewTally();attemptsDiv.appendChild(currentTally)}else{currentTally=tallies[tallies.length-1]}const marks=currentTally.getElementsByClassName("mark");let marksVisible=0;for(let i=0;i<marks.length;i++){if(!marks[i].classList.contains("hidden")){marksVisible++}}if(marksVisible<5){marks[marksVisible].classList.remove("hidden")}else{currentTally=createNewTally();attemptsDiv.appendChild(currentTally);currentTally.getElementsByClassName("mark")[0].classList.remove("hidden")}}function createNewTally(){const tally=document.createElement("div");tally.className="tally";for(let i=1;i<=5;i++){const mark=document.createElement("div");mark.className=`mark mark${i} hidden`;const jiggleY=Math.floor(Math.random()*5)-2;const jiggleRot=Math.floor(Math.random()*3)-1;mark.style.transform=`rotate(${jiggleRot}deg) translateY(${jiggleY}px)`;tally.appendChild(mark)}return tally}backwardsTiles.forEach((function(el){el.addEventListener("click",(function(){placeTile(el)}))}));function goConfetti(){function fire(particleRatio,opts){confetti(Object.assign({},{origin:{y:.7}},opts,{particleCount:Math.floor(200*particleRatio)}))}fire(.25,{spread:26,startVelocity:55});fire(.2,{spread:60});fire(.35,{spread:100,decay:.91,scalar:.8});fire(.1,{spread:120,startVelocity:25,decay:.92,scalar:1.2});fire(.1,{spread:120,startVelocity:45})}function isMobileDevice(){return/Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)}function flipTile(el){if(el.dataset.flippedTo)return;const tileType=tileTypes[el.dataset.tileIndex];el.dataset.flippedTo=tileType;el.classList.add(tileType);el.style.rotate="0deg"}function placeTile(el){const i=parseInt(el.dataset.tileIndex);if(placedTiles[i])return;if(gameOver){flipTile(el);return}startMessage.style.display="none";el.style.visibility="hidden";const tileNumber=currentTileIndex+1;const tile=document.getElementById("t"+tileNumber);const tileType=tileTypes[i];tile.classList.add(tileType);tile.style.visibility="visible";placedTiles[i]=true;const jiggleX=Math.floor(Math.random()*5)-1;const jiggleY=Math.floor(Math.random()*5)-1;const jiggleRot=Math.floor(Math.random()*5)-2;tile.style.transform=`rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`;gameHistory[gameHistory.length-1].moves.push(i);const row=Math.floor(currentTileIndex/boardSize);const col=currentTileIndex%boardSize;boardState[row][col]=tileType[0].toUpperCase();const sequencesFound=checkForFox(boardState);if(sequencesFound.length>0){sequencesFound.forEach((sequence=>{sequence.forEach((pos=>{const failedTileNumber=pos.row*boardSize+pos.col+1;const failedTile=document.getElementById("t"+failedTileNumber);failedTile.classList.add("failed")}))}));gameOver=true;boardContainer.classList.add("gameover");startMessage.textContent="Bad luck! 🦊 Tap the board to try again.";startMessage.classList.add("retry");startMessage.style.display="block";if(sequencesFound.length>1)d.unlockAchievement("classic-twofox");return}currentTileIndex++;if(currentTileIndex>=totalTiles){endMessage.style.display="block";restartBtn.style.display="block";resultText.textContent=`${totalAttempts} attempt${totalAttempts>1?"s":""}`;const chanceofDoingWorse=Math.pow(1-successChance,totalAttempts);if(chanceofDoingWorse<.1){compareText.textContent=`You were quite unlucky! ${Math.round((1-chanceofDoingWorse)*1e3,1)/10}% of people won before this point 😭`}else{compareText.textContent=`That's better than ${Math.round(chanceofDoingWorse*100)}% of people!`}textToShare=`I completed the Do Not Find The Fox challenge in ${totalAttempts} attempts. Can you do better? 🦊`;if(totalAttempts>=lbThreshold){submitForm.style.display="block"}goConfetti();d.unlockAchievement("classic-win");if(totalAttempts==1)d.unlockAchievement("classic-1");d.postResult("classic","attempts",totalAttempts)}}function updateLeaderboard(){fetch("/highscores").then((response=>response.json())).then((data=>{const todayContainer=document.querySelector('.lboard[data-time="today"]');const alltimeContainer=document.querySelector('.lboard[data-time="alltime"]');todayContainer.innerHTML="";alltimeContainer.innerHTML="";function renderLeaderboard(container,entries){entries.forEach((entry=>{const lboardEntry=document.createElement("div");lboardEntry.classList.add("lboarde");const flagCode=countries[entry.flag]?entry.flag:"ad";const flagImg=document.createElement("img");flagImg.src=`https://flagcdn.com/56x42/${flagCode}.png`;const scoreSpan=document.createElement("span");scoreSpan.classList.add("lbs");scoreSpan.textContent=entry.score;const nameSpan=document.createElement("span");nameSpan.textContent=entry.name;lboardEntry.appendChild(flagImg);lboardEntry.appendChild(scoreSpan);lboardEntry.appendChild(nameSpan);container.appendChild(lboardEntry)}))}if(data.classic.today){renderLeaderboard(todayContainer,data.classic.today);if(data.classic.today.length<10){lbThreshold=0}else{lbThreshold=data.classic.today[data.classic.today.length-1].score}}if(data.classic.alltime){renderLeaderboard(alltimeContainer,data.classic.alltime)}})).catch((error=>{console.error("Error fetching the leaderboard:",error)}))}function populateCountryOptions(){const selectElement=document.getElementById("countryinp");selectElement.innerHTML="";const sortedCountries=Object.entries(countries).sort(((a,b)=>a[1].localeCompare(b[1])));sortedCountries.forEach((([code,name])=>{const option=document.createElement("option");option.value=code;option.textContent=name;selectElement.appendChild(option)}))}randomiseBackwardsTiles();incrementTally();populateCountryOptions();updateLeaderboard();boardContainer.addEventListener("click",(function(){if(gameOver){resetGame();return}}));restartBtn.addEventListener("click",(function(){totalAttempts=0;attemptsDiv.innerHTML="";restartBtn.style.display="none";gameHistory=[];resetGame()}));shareButton.addEventListener("click",(function(){if(isMobileDevice()&&navigator.share){navigator.share({text:textToShare,url:"https://donotfindthefox.com"})}else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(`${textToShare}. Try it at www.donotfindthefox.com`).then((function(){copiedDiv.style.display="block";copiedDiv.style.opacity=1;setTimeout((function(){copiedDiv.style.opacity=0}),250);setTimeout((function(){copiedDiv.style.display="none"}),3e3)}))}}));document.getElementById("submitlb").addEventListener("click",(function(){if(lbThreshold===undefined||gameHistory==[])return;const name=document.getElementById("hsname").value;const flag=document.getElementById("countryinp").value;const errorDiv=document.querySelector(".hserr");if(!name||!flag){errorDiv.textContent="Please enter a name and select a flag.";return}errorDiv.textContent="Submitting...";const highscoreData={name:name,flag:flag,game:gameHistory};fetch("/submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(highscoreData)}).then((response=>response.json().then((data=>({status:response.status,data:data}))))).then((({status:status,data:data})=>{if(status===200){errorDiv.textContent="Score submitted. It may take a minute to appear on the leaderboard."}else{errorDiv.textContent=data.error||"An unknown error occurred."}})).catch((error=>{errorDiv.textContent="An error occurred while submitting your score.";console.error("Error:",error)}))}));d.setupHeader()}));
-</script> <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"86bb1d51971a47a7ae5c58d6111f0833","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-</body> </html> 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Do Not Find the Fox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <script src="https://unpkg.com/@tsparticles/confetti@3.5.0/tsparticles.confetti.bundle.min.js" integrity="sha384-QfC9Q/nx1glZ5unSCk+a3OOT7zJDXvQVl2wbCr4tgrkiFAxQddG8+VxAyooQIMCh" crossorigin="anonymous" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" integrity="sha384-42kyIPf7HDYLkGffmxDhSx/3Z/53wGBs3nD6wEFxsbeDc7rMO6mkYbkAcpRsnMU2" crossorigin="anonymous">
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+        font-family: "Patrick Hand SC", cursive;
+        font-weight: 400;
+        font-style: normal;
+        flex-direction: column;
+      }
+
+      #board-container {
+        position: relative;
+        width: 90vw;
+        max-width: 500px;
+        aspect-ratio: 600 / 763;
+      }
+
+      .gameover {
+        cursor: pointer;
+      }
+
+      #board-and-tiles {
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      #board-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        user-select: none;
+        filter: drop-shadow(8px 8px 6px rgba(0, 0, 0, 0.5));
+      }
+
+      a {
+        color: #e9680a;
+      }
+
+      .btn {
+        border-width: 0;
+        padding: 0.2rem 1rem 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 1.5rem;
+        color: #fff;
+        background: #e9680a;
+        font-family: "Patrick Hand SC", cursive;
+        font-weight: 400;
+        font-style: normal;
+        display: flex;
+        align-items: end;
+        flex-direction: row;
+        cursor: pointer;
+        margin: 0 auto;
+      }
+
+      .btn.preo {
+        font-size: 1.2rem;
+        padding: 0.2rem 0.8rem 0.3rem 0.8rem;
+      }
+
+      a.btn {
+        display: inline-block;
+        text-decoration: none;
+      }
+
+      a.mbtn {
+        display: block;
+        text-align: center;
+      }
+
+      a.mbtn:not(:last-child) {
+        margin-bottom: .5rem;
+      }
+
+      .btn:hover {
+        background: #d83f03;
+      }
+
+      .btni {
+        font-size: 3rem;
+        display: inline-block;
+        text-decoration: none;
+        color: #e9680a;
+      }
+
+      .btni:hover {
+        color: #d83f03;
+      }
+
+      #copied {
+        padding: 0.5rem;
+        font-size: 1rem;
+        background: #ffebe2;
+        margin-top: 0.5rem;
+        opacity: 1;
+        transition: opacity 3s ease;
+        display: none;
+      }
+
+      #start-message,
+      #end-message,
+      #restart-message {
+        font-size: 1.6rem;
+        color: #333;
+        text-align: center;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 0.3rem;
+        line-height: 1;
+      }
+
+      #start-message,
+      #restart-message {
+        position: absolute;
+        top: 50%;
+        left: 54%;
+        transform: translate(-50%, -50%);
+        user-select: none;
+        width: 85%;
+      }
+
+      #restart-message {
+        display: none;
+        top: 15%;
+      }
+
+      #start-message.retry {
+        top: 15%;
+      }
+
+      #end-message {
+        margin-top: 1.5rem;
+        max-width: 90%;
+        display: none;
+      }
+
+      #restart {
+        margin-top: 1.5rem;
+        display: none;
+      }
+
+      #tiles-container {
+        position: absolute;
+        top: 27.8%;
+        left: 23%;
+        width: 62%;
+        height: 48.75%;
+      }
+
+      .tiles {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        margin: 1rem 0;
+        gap: 0.5rem;
+        filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.6));
+      }
+
+      .b,
+      .bs,
+      .bd {
+        position: relative;
+        width: 2.1rem;
+        height: 2.1rem;
+        background-image: url('./img/tiles.png');
+        background-size: 400% 500%;
+        background-repeat: no-repeat;
+        transform: none;
+        z-index: 1;
+      }
+
+      .b.clone {
+        pointer-events: none;
+      }
+
+      .b {
+        cursor: pointer;
+      }
+
+      .b:hover {
+        transform: rotate(1deg) scale(1.3) !important;
+        rotate: 0deg !important;
+        z-index: 999;
+        filter: drop-shadow(4px 4px 5px rgba(0, 0, 0, 0.5));
+      }
+
+      .b1 {
+        background-position: 0% 100%;
+      }
+
+      .b2 {
+        background-position: 33.33% 100%;
+      }
+
+      .b3 {
+        background-position: 66.66% 100%;
+      }
+
+      .b4 {
+        background-position: 100% 100%;
+      }
+
+      .bd {
+        cursor: grab;
+      }
+
+      .t,
+      .ts,
+      .td {
+        position: absolute;
+        width: 24.5%;
+        height: 24.5%;
+        background-image: url('./img/tiles.png');
+        background-size: 400% 500%;
+        background-repeat: no-repeat;
+        visibility: hidden;
+        filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.6));
+        transform: translateX(2px) translateY(2px) rotate(-3deg);
+        transition: transform 0.1s ease-out;
+      }
+
+      .ts,
+      .td {
+        visibility: visible;
+        background-image: none;
+      }
+
+      .ts:not(.placed) {
+        cursor: pointer;
+      }
+
+      .ts.placed,
+      .td.placed {
+        background-image: url('./img/tiles.png');
+      }
+
+      .ts:not(.placed):hover,
+      .td:not(.placed).over {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 33%;
+      }
+
+      ;
+
+      .gameover .ts:not(.placed) {
+        background: none !important;
+      }
+
+      .failed {
+        filter: brightness(1.2) drop-shadow(3px 5px 1px rgba(0, 0, 0, 0.8));
+        animation: jiggle 0.3s;
+      }
+
+      @keyframes jiggle {
+        0% {
+          transform: translate(1px, 1px) rotate(0deg);
+        }
+
+        10% {
+          transform: translate(-1px, -2px) rotate(-1deg);
+        }
+
+        20% {
+          transform: translate(-3px, 0px) rotate(1deg);
+        }
+
+        30% {
+          transform: translate(3px, 2px) rotate(0deg);
+        }
+
+        40% {
+          transform: translate(1px, -1px) rotate(1deg);
+        }
+
+        50% {
+          transform: translate(-1px, 2px) rotate(-1deg);
+        }
+
+        60% {
+          transform: translate(-3px, 1px) rotate(0deg);
+        }
+
+        70% {
+          transform: translate(3px, 1px) rotate(-1deg);
+        }
+
+        80% {
+          transform: translate(-1px, -1px) rotate(1deg);
+        }
+
+        90% {
+          transform: translate(1px, 2px) rotate(0deg);
+        }
+
+        100% {
+          transform: translate(1px, -2px) rotate(-1deg);
+        }
+      }
+
+      .t1 {
+        top: 0%;
+        left: 0%;
+      }
+
+      .t2 {
+        top: 0%;
+        left: 25%;
+      }
+
+      .t3 {
+        top: 0%;
+        left: 50%;
+      }
+
+      .t4 {
+        top: 0%;
+        left: 75%;
+      }
+
+      .t5 {
+        top: 25%;
+        left: 0%;
+      }
+
+      .t6 {
+        top: 25%;
+        left: 25%;
+      }
+
+      .t7 {
+        top: 25%;
+        left: 50%;
+      }
+
+      .t8 {
+        top: 25%;
+        left: 75%;
+      }
+
+      .t9 {
+        top: 50%;
+        left: 0%;
+      }
+
+      .t10 {
+        top: 50%;
+        left: 25%;
+      }
+
+      .t11 {
+        top: 50%;
+        left: 50%;
+      }
+
+      .t12 {
+        top: 50%;
+        left: 75%;
+      }
+
+      .t13 {
+        top: 75%;
+        left: 0%;
+      }
+
+      .t14 {
+        top: 75%;
+        left: 25%;
+      }
+
+      .t15 {
+        top: 75%;
+        left: 50%;
+      }
+
+      .t16 {
+        top: 75%;
+        left: 75%;
+      }
+
+      .x1 {
+        background-position: 0% 0%;
+      }
+
+      .x2 {
+        background-position: 33.33% 0%;
+      }
+
+      .o1 {
+        background-position: 66.66% 0%;
+      }
+
+      .x3 {
+        background-position: 100% 0%;
+      }
+
+      .x4 {
+        background-position: 0% 25%;
+      }
+
+      .x5 {
+        background-position: 33.33% 25%;
+      }
+
+      .o2 {
+        background-position: 66.66% 25%;
+      }
+
+      .o3 {
+        background-position: 100% 25%;
+      }
+
+      .o4 {
+        background-position: 0% 50%;
+      }
+
+      .o5 {
+        background-position: 33.33% 50%;
+      }
+
+      .o6 {
+        background-position: 66.66% 50%;
+      }
+
+      .f1 {
+        background-position: 100% 50%;
+      }
+
+      .f2 {
+        background-position: 0% 75%;
+      }
+
+      .f3 {
+        background-position: 33.33% 75%;
+      }
+
+      .f4 {
+        background-position: 66.66% 75%;
+      }
+
+      .f5 {
+        background-position: 100% 75%;
+      }
+
+      .wild {
+        background-image: url('./img/tiles2b.png') !important;
+        background-position: 0% 0%;
+      }
+
+      #attempts {
+        position: absolute;
+        top: 84.5%;
+        left: 64.5%;
+        width: 32%;
+        height: 13%;
+        overflow: visible;
+      }
+
+      .tally {
+        position: relative;
+        width: 25%;
+        aspect-ratio: 92 / 72;
+        display: inline-block;
+      }
+
+      .mark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        background-image: url('./img/ticks.png');
+        background-size: 500% 100%;
+        background-repeat: no-repeat;
+      }
+
+      .mark.hidden {
+        display: none;
+      }
+
+      .mark1 {
+        background-position: 0% 0%;
+      }
+
+      .mark2 {
+        background-position: 25% 0%;
+      }
+
+      .mark3 {
+        background-position: 50% 0%;
+      }
+
+      .mark4 {
+        background-position: 75% 0%;
+      }
+
+      .mark5 {
+        background-position: 100% 0%;
+      }
+
+      .hi {
+        font-size: 1.3rem;
+        margin-top: 1rem;
+      }
+
+      .there {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .me {
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 1.2rem;
+      }
+
+      .plshelp {
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        color: #333;
+        text-align: center;
+        background: #f9f9f9;
+        border-radius: 0.3rem;
+        line-height: 1;
+        width: 95%;
+        max-width: 600px;
+      }
+
+      .prettypls,
+      .outsideuk {
+        padding: 0 1rem;
+        margin: 1rem 0;
+        font-family: sans-serif;
+        text-align: left;
+      }
+
+      .outsideuk {
+        font-size: 0.8rem;
+      }
+
+      .buythisone,
+      .orthisone {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: left;
+        margin-bottom: 1rem;
+      }
+
+      .orthisone {
+        flex-direction: column-reverse;
+      }
+
+      .buythisone img,
+      .orthisone img {
+        max-width: 260px;
+        margin-bottom: 0.5rem;
+      }
+
+      .itrlyhelps {
+        padding: 0 1rem;
+      }
+
+      .itrlyhelps:first-child {
+        text-align: right;
+      }
+
+      .buythisone h2,
+      .orthisone h2 {
+        text-align: left;
+      }
+
+      .thisbookisinsane {
+        display: block;
+        font-family: sans-serif;
+        text-align: left;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .orpleasefollowmelol {
+        text-align: center;
+        font-size: 1.6rem;
+        margin: 2rem 0;
+      }
+
+      .youtube-video {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        max-width: 560px;
+      }
+
+      .lboardw {
+        margin: 1rem 0;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      .lboards {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+      }
+
+      .lboardv {
+        flex-grow: 1;
+        max-width: 50%;
+      }
+
+      .lboard {
+        width: 100%;
+        margin: 0 auto;
+        min-height: 20rem;
+        background-color: #e4e2dc;
+        border: 1px solid #909090;
+        filter: drop-shadow(4px 2px 3px rgba(0, 0, 0, 0.3));
+        border-radius: 0.5rem;
+      }
+
+      .lboardw>h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .lboarde {
+        width: 100%;
+        height: 2.2rem;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        text-transform: uppercase;
+        gap: 0.3rem;
+        padding: 0.5rem;
+        border-bottom: 1px dashed #989898;
+      }
+
+      .lboarde>img {
+        max-height: 1rem;
+      }
+
+      .lboarde>span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+      }
+
+      .lbs {
+        font-size: 1.2rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 1rem;
+        background-color: #d9d1c1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .lboarde:nth-child(1)>.lbs {
+        font-size: 1.5rem;
+        background-color: #f9cf00;
+        filter: drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));
+      }
+
+      .lboarde:nth-child(2)>.lbs {
+        font-size: 1.5rem;
+        background-color: #9c9c99;
+        filter: drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));
+      }
+
+      .lboarde:nth-child(3)>.lbs {
+        font-size: 1.5rem;
+        background-color: #9b8577;
+        filter: drop-shadow(2px 1px 1px rgba(0, 0, 0, 0.6));
+      }
+
+      .submiths {
+        background: #e4e2dc;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        display: none;
+      }
+
+      .submitfm {
+        display: grid;
+        grid-template-columns: 20% 80%;
+        grid-gap: 0.25rem;
+        margin: 0.5rem 0;
+        text-align: left;
+      }
+
+      .hsinp {
+        padding: 0.2rem;
+        font-size: 1.2rem;
+      }
+
+      .modes {
+        text-align: center;
+        margin-top: 1.25rem;
+      }
+
+      .modes>h3 {
+        font-size: 1.5rem;
+        font-weight: normal;
+      }
+
+      .gml {}
+
+      .gml.selected {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      .gml>img {
+        width: 7rem;
+        height: auto;
+      }
+
+      .gml:not(.selected)>img {
+        border: 2px solid #2e2e2e;
+        border-radius: 0.5rem;
+      }
+
+      .gml:hover>img {
+        border-color: #683636;
+      }
+
+      .advent-title {
+        color: #d1dbf1;
+        font-weight: normal;
+        font-size: 1.1rem;
+        width: 20%;
+        position: absolute;
+        left: 60.5%;
+        top: 9.8%;
+        height: 5%;
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        filter: drop-shadow(2px 1px 4px #061a5b);
+        user-select: none;
+      }
+
+      .advent-ad {
+        width: 500px;
+        max-width: 100%;
+        margin-bottom: -1.5rem;
+        user-select: none;
+        height: auto;
+      }
+
+      @media (orientation:landscape) {
+        #board-and-tiles {
+          flex-direction: row;
+          max-width: 70%;
+        }
+
+        .tiles {
+          flex-direction: column;
+          height: auto;
+          width: auto;
+          margin: 0 1rem;
+        }
+      }
+
+      @media screen and (min-width:380px) {
+
+        .b,
+        .bs,
+        .bd {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+      }
+
+      @media screen and (min-width:500px) {
+
+        .b,
+        .bs,
+        .bd {
+          width: 3rem;
+          height: 3rem;
+        }
+
+        #start-message,
+        #restart-message {
+          width: 55%;
+        }
+
+        .buythisone,
+        .orthisone {
+          flex-direction: row;
+        }
+
+        .buythisone img,
+        .orthisone img {
+          margin-bottom: 0;
+        }
+
+        .lboarde>img {
+          max-height: 1.5rem;
+        }
+
+        .lboarde {
+          gap: 0.5rem;
+          font-size: 1.3rem;
+        }
+
+        .advent-title {
+          font-size: 1.7rem;
+        }
+      }
+
+      @media screen and (min-width:800px) {
+        #board-and-tiles {
+          flex-direction: row;
+        }
+
+        .tiles {
+          flex-direction: column;
+          height: auto;
+          width: auto;
+          margin: 0 1rem;
+        }
+
+        .b,
+        .bs,
+        .bd {
+          width: 4rem;
+          height: 4rem;
+        }
+
+        .hi {
+          font-size: 1.8rem;
+          margin-top: 1.3rem;
+        }
+
+        .lboardw {
+          margin-top: 3rem;
+        }
+      }
+
+      @media (orientation:landscape) and (max-height:400px) {
+        .b {
+          width: 2.2rem;
+          height: 2.2rem;
+        }
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 450px;
+        margin: 0.75rem 0;
+        padding: 0 0.75rem;
+      }
+
+      .acbtn {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #cbcbcb;
+        border-radius: 50%;
+        font-size: 1.3rem;
+        position: relative;
+      }
+
+      #acnotif {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+        background: #ff4700;
+        display: none;
+      }
+
+      .acbtn>i {
+        color: #7b7b7b;
+      }
+
+      .modalbg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        visibility: hidden;
+        opacity: 0;
+        display: flex;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+
+      .modal {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 400px;
+        max-width: 90%;
+        transform: translateY(-100px);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      .cbtn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+      }
+
+      .modalbg.active {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .modalbg.active .modal {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .ac-list {
+        margin-top: 0.5rem;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      .ach {
+        border: 1px solid #ccc;
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.25rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        opacity: 0.5;
+      }
+
+      .ach.got {
+        border-color: rgba(69, 244, 69, 0.6);
+        background-color: #edffc3;
+        opacity: 1;
+      }
+
+      .ach-txt {
+        flex-grow: 1;
+      }
+
+      .ach-icon {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.25rem;
+        margin-left: 0.25rem;
+        border: 1px solid #000000;
+        background: #000000;
+        color: #ffffff;
+        opacity: 0.5;
+        flex-shrink: 0;
+      }
+
+      .ach-bob {
+        background: #db0000;
+      }
+
+      .ach.got>.ach-icon {
+        border-width: 0;
+        opacity: 1;
+        box-shadow: 0px 0px 2px 1px rgba(69, 244, 69, 0.6), 0px 0px 16px 1px rgba(69, 244, 69, 0.4);
+      }
+
+      .ach.got>.ach-bob {
+        box-shadow: 0px 0px 2px 1px rgb(244 69 69 / 60%), 0px 0px 16px 1px rgb(244 69 69 / 40%);
+      }
+
+      .ach-icon>.bx {
+        font-size: 1.5rem;
+      }
+
+      .ach-pop {
+        position: absolute;
+        bottom: 0;
+        margin-bottom: 1rem;
+        pointer-events: none;
+        animation: achUp 1s ease 1;
+      }
+
+      @keyframes achUp {
+        0% {
+          transform: translateY(3rem);
+          opacity: 0;
+        }
+
+        100% {
+          transform: none;
+          opacity: 1;
+        }
+      }
+
+      #itemrack {
+        display: flex;
+        gap: 0.5rem;
+        position: absolute;
+        top: 95%;
+        left: 16%;
+      }
+
+      .itemri {
+        cursor: pointer;
+      }
+
+      .itemri.disabled {
+        filter: saturate(0);
+      }
+    </style>
+    <script>
+      ! function(e, t, n, s, c, a, i) {
+        e[c] = e[c] || function() {
+          (e[c].q = e[c].q || []).push(arguments)
+        }, a = t.createElement(n), a.async = 1, a.src = "https://assets.mailerlite.com/js/universal.js", i = t.getElementsByTagName(n)[0], i.parentNode.insertBefore(a, i)
+      }(window, document, "script", 0, "ml"), ml("account", "1104866");
+    </script>
+  </head>
+  <body>
+    <!-- <img class="advent-ad" src="./img/advent.png" width="500" height="153" draggable="false" /> -->
+    <div class="header">
+      <a href="#" class="acbtn" id="mnOpen">
+        <i class="bx bx-menu"></i>
+      </a>
+      <a href="#" class="acbtn" id="acOpen">
+        <div id="acnotif"></div>
+        <i class="bx bxs-trophy"></i>
+      </a>
+    </div>
+    <div id="board-and-tiles">
+      <div class="tiles" id="tiles1">
+        <div class="b b2"></div>
+        <div class="b b3"></div>
+        <div class="b b4"></div>
+        <div class="b b4"></div>
+        <div class="b b4"></div>
+        <div class="b b3"></div>
+        <div class="b b2"></div>
+        <div class="b b1"></div>
+      </div>
+      <div id="board-container">
+        <img id="board-image" src="./img/board.png" alt="Board">
+        <div id="tiles-container">
+          <!-- Tiles without initial tile type classes -->
+          <div class="t t1" id="t1"></div>
+          <div class="t t2" id="t2"></div>
+          <div class="t t3" id="t3"></div>
+          <div class="t t4" id="t4"></div>
+          <div class="t t5" id="t5"></div>
+          <div class="t t6" id="t6"></div>
+          <div class="t t7" id="t7"></div>
+          <div class="t t8" id="t8"></div>
+          <div class="t t9" id="t9"></div>
+          <div class="t t10" id="t10"></div>
+          <div class="t t11" id="t11"></div>
+          <div class="t t12" id="t12"></div>
+          <div class="t t13" id="t13"></div>
+          <div class="t t14" id="t14"></div>
+          <div class="t t15" id="t15"></div>
+          <div class="t t16" id="t16"></div>
+        </div>
+        <div id="attempts"></div>
+        <div id="start-message">Place the tiles without making the word "FOX" in any direction. <br>
+          <br>Tap a tile to play.
+        </div>
+      </div>
+      <div class="tiles" id="tiles2">
+        <div class="b b1"></div>
+        <div class="b b2"></div>
+        <div class="b b1"></div>
+        <div class="b b3"></div>
+        <div class="b b4"></div>
+        <div class="b b3"></div>
+        <div class="b b2"></div>
+        <div class="b b4"></div>
+      </div>
+    </div>
+    <div id="end-message"> You did it! <br>
+      <br> You managed to avoid the fox after <span id="result">27</span>. <br>
+      <br>
+      <span id="compare"></span>
+      <br>
+      <br>
+      <div class="submiths"> Your streak qualifies for the leaderboard: <br>
+        <div class="submitfm">
+          <span>Flag:</span>
+          <select id="countryinp" class="hsinp" type="text"></select>
+          <span>Name:</span>
+          <input id="hsname" class="hsinp" type="text" maxlength="12">
+        </div>
+        <div class="hserr"></div>
+        <button class="btn" id="submitlb">Submit Score</button>
+      </div>
+      <button class="btn" id="share">
+        <i class="bx bx-share-alt"></i> Share </button>
+      <div id="copied">TEXT HAS BEEN COPIED TO YOUR CLIPBOARD</div>
+    </div>
+    <button id="restart" class="btn"> LET ME TRY AGAIN </button>
+    <div class="lboardw">
+      <h3>Most Attempts to Not Find The Fox</h3>
+      <div class="lboards">
+        <div class="lboardv">
+          <h4>TODAY</h4>
+          <div class="lboard" data-time="today"></div>
+        </div>
+        <div class="lboardv">
+          <h4>RECENT</h4>
+          <div class="lboard" data-time="alltime"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hi">
+      <div class="there">
+        <img class="me" src="./img/avatar.jpg" alt="A picture of Alex Cheddar"> A game by <a href="https://www.youtube.com/@AlexCheddarUK">Alex Cheddar</a>
+      </div>
+    </div>
+    <div class="plshelp">
+      <div class="prettypls"> If you would like to thank or support me, I made two very silly and absurdly difficult word search books which are <strong>out now</strong>. </div>
+      <div class="buythisone">
+        <img src="./img/ftf.png" alt="Find the Fox: An Almost Impossible Word Search">
+        <div class="itrlyhelps">
+          <h2>FIND THE FOX</h2>
+          <br>
+          <span class="thisbookisinsane"> One simple challenge: 200 pages of grids, and the word FOX appears just <strong>once</strong>. A perfect gift for someone with too much time on their hands, or that friend who thinks they're <em>so</em> clever. </span>
+          <a class="btn preo" href="https://amzn.to/3ZseP3N">Amazon</a>
+          <a class="btn preo" href="https://www.waterstones.com/book/find-the-fox/alex-cheddar/9781788405942">Waterstones</a>
+          <a class="btn preo" href="https://blackwells.co.uk/bookshop/product/Find-the-Fox-by-Alex-Cheddar/9781788405942">Blackwells</a>
+        </div>
+      </div>
+      <div class="orthisone">
+        <div class="itrlyhelps">
+          <h2>20,000 COWS!</h2>
+          <br>
+          <span class="thisbookisinsane"> On page 1, there is one "COW" to find. On page 2, there are two. On page 200, you are faced with the task of finding 200 cows. In total that's <strong>just over 20,000 cows</strong> to find. Can you beat this cowlossal challenge? </span>
+          <a class="btn preo" href="https://amzn.to/47qJeBB">Amazon</a>
+          <a class="btn preo" href="https://www.waterstones.com/book/20-000-cows/alex-cheddar/9781788405959">Waterstones</a>
+          <a class="btn preo" href="https://blackwells.co.uk/bookshop/product/20000-Cows-by-Alex-Cheddar/9781788405959">Blackwells</a>
+        </div>
+        <img src="./img/20kc.png" alt="20,000 Cows!: An Almost Impossible Word Search">
+      </div>
+      <div class="prettypls">
+        <div class="ml-embedded" data-form="iIyWV7"></div>
+      </div>
+    </div>
+    <div class="orpleasefollowmelol"> I've made a <a href="https://www.youtube.com/@AlexCheddarUK">video</a> analysing the chances of winning (or not winning) this game: </div>
+    <iframe class="youtube-video" width="560" height="315" src="https://www.youtube.com/embed/6jovMx_c1SU?si=Ot_rP09xwnrtL7_L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div class="orpleasefollowmelol"> I'm cooking up more games! Follow me if you want updates: <br>
+      <a class="btni" href="https://www.youtube.com/@AlexCheddarUK">
+        <i class="bx bxl-youtube"></i>
+      </a>
+      <a class="btni" href="https://www.instagram.com/a.cheddar/">
+        <i class="bx bxl-instagram-alt"></i>
+      </a>
+      <a class="btni" href="https://www.tiktok.com/@a.cheddar">
+        <i class="bx bxl-tiktok"></i>
+      </a>
+      <a class="btni" href="https://www.facebook.com/people/Alex-Cheddar/61563365097458/">
+        <i class="bx bxl-facebook-circle"></i>
+      </a>
+    </div>
+    <div class="orpleasefollowmelol"> Flags by <a href="https://flagpedia.net/">Flagpedia</a>
+    </div>
+    <div id="acOver" class="modalbg">
+      <div class="modal">
+        <button id="acClose" class="cbtn">&times;</button>
+        <h2>Achievements</h2>
+        <div class="ac-list" id="acList"></div>
+      </div>
+    </div>
+    <div id="mnOver" class="modalbg">
+      <div class="modal">
+        <button id="mnClose" class="cbtn">&times;</button>
+        <a class="btn mbtn" href="/classic">Classic</a>
+        <a class="btn mbtn" href="/oooo">OOOO</a>
+        <a class="btn mbtn" href="/dice/level1">Dice Game: Level 1</a>
+        <a class="btn mbtn" href="/advent">Advent 2024</a>
+      </div>
+    </div>
+    <script>
+      var d = window.Dnftf = function() {
+        this.directions = [{
+          dx: -1,
+          dy: 0
+        }, {
+          dx: -1,
+          dy: 1
+        }, {
+          dx: 0,
+          dy: 1
+        }, {
+          dx: 1,
+          dy: 1
+        }, {
+          dx: 1,
+          dy: 0
+        }, {
+          dx: 1,
+          dy: -1
+        }, {
+          dx: 0,
+          dy: -1
+        }, {
+          dx: -1,
+          dy: -1
+        }];
+        this.attemptsDiv = document.getElementById("attempts")
+      };
+      d.prototype.prng = function(a) {
+        return function() {
+          a |= 0;
+          a = a + 2654435769 | 0;
+          let t = a ^ a >>> 16;
+          t = Math.imul(t, 569420461);
+          t = t ^ t >>> 15;
+          t = Math.imul(t, 1935289751);
+          return ((t = t ^ t >>> 15) >>> 0) / 4294967296
+        }
+      };
+      d.prototype.shuffle = function(array, rng) {
+        rng = rng || Math.random;
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]]
+        }
+      };
+      d.prototype.checkForFox = function(boardState, wordsToCheck) {
+        const sequencesFound = [];
+        const boardHeight = boardState.length;
+        const boardWidth = boardState[0].length;
+        for (let i = 0; i < boardHeight; i++) {
+          for (let j = 0; j < boardWidth; j++) {
+            if (!boardState[i][j]) continue;
+            for (let dir = 0; dir < this.directions.length; dir++) {
+              const dx = this.directions[dir].dx;
+              const dy = this.directions[dir].dy;
+              const positions = [{
+                row: i,
+                col: j
+              }];
+              let word = boardState[i][j];
+              for (let step = 1; step < 3; step++) {
+                const newRow = i + dx * step;
+                const newCol = j + dy * step;
+                if (newRow >= 0 && newRow < boardHeight && newCol >= 0 && newCol < boardWidth) {
+                  const nextLetter = boardState[newRow][newCol];
+                  if (!nextLetter) break;
+                  word += nextLetter;
+                  positions.push({
+                    row: newRow,
+                    col: newCol
+                  })
+                } else {
+                  break
+                }
+              }
+              if (word.length === 3 && wordsToCheck.includes(word)) {
+                sequencesFound.push(positions)
+              }
+            }
+          }
+        }
+        return sequencesFound
+      };
+      d.prototype.resetTally = function() {
+        this.attemptsDiv.innerHTML = ""
+      };
+      d.prototype.incrementTally = function() {
+        this.incrementTallyFor(this.attemptsDiv)
+      };
+      d.prototype.incrementTallyFor = function(el) {
+        const tallies = el.getElementsByClassName("tally");
+        let currentTally;
+        if (tallies.length === 0) {
+          currentTally = this.createNewTally();
+          el.appendChild(currentTally)
+        } else {
+          currentTally = tallies[tallies.length - 1]
+        }
+        const marks = currentTally.getElementsByClassName("mark");
+        let marksVisible = 0;
+        for (let i = 0; i < marks.length; i++) {
+          if (!marks[i].classList.contains("hidden")) {
+            marksVisible++
+          }
+        }
+        if (marksVisible < 5) {
+          marks[marksVisible].classList.remove("hidden")
+        } else {
+          currentTally = this.createNewTally();
+          el.appendChild(currentTally);
+          currentTally.getElementsByClassName("mark")[0].classList.remove("hidden")
+        }
+      };
+      d.prototype.createNewTally = function() {
+        const tally = document.createElement("div");
+        tally.className = "tally";
+        for (let i = 1; i <= 5; i++) {
+          const mark = document.createElement("div");
+          mark.className = `mark mark${i} hidden`;
+          const jiggleY = Math.floor(Math.random() * 5) - 2;
+          const jiggleRot = Math.floor(Math.random() * 3) - 1;
+          mark.style.transform = `rotate(${jiggleRot}deg) translateY(${jiggleY}px)`;
+          tally.appendChild(mark)
+        }
+        return tally
+      };
+      d.prototype.jiggle = function(tile) {
+        const jiggleX = Math.floor(Math.random() * 5) - 1;
+        const jiggleY = Math.floor(Math.random() * 5) - 1;
+        const jiggleRot = Math.floor(Math.random() * 5) - 2;
+        tile.style.transform = `rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`
+      };
+      d.prototype.confetti = function() {
+        function fire(particleRatio, opts) {
+          confetti(Object.assign({}, {
+            origin: {
+              y: .7
+            }
+          }, opts, {
+            particleCount: Math.floor(200 * particleRatio)
+          }))
+        }
+        fire(.25, {
+          spread: 26,
+          startVelocity: 55
+        });
+        fire(.2, {
+          spread: 60
+        });
+        fire(.35, {
+          spread: 100,
+          decay: .91,
+          scalar: .8
+        });
+        fire(.1, {
+          spread: 120,
+          startVelocity: 25,
+          decay: .92,
+          scalar: 1.2
+        });
+        fire(.1, {
+          spread: 120,
+          startVelocity: 45
+        })
+      };
+      d.prototype.dup1d = function(arr) {
+        return arr.slice()
+      };
+      d.prototype.dup2d = function(arr) {
+        var dup = [];
+        for (var i = 0; i < arr.length; i++) {
+          dup[i] = arr[i].slice()
+        }
+        return dup
+      };
+      d.prototype.setShareText = function(text) {
+        this.textToShare = text
+      };
+      d.prototype.isMobileDevice = function() {
+        return /Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)
+      };
+      d.prototype.setupShareButton = function() {
+        const self = this;
+        const compareText = document.getElementById("compare");
+        const shareButton = document.getElementById("share");
+        const copiedDiv = document.getElementById("copied");
+        shareButton.addEventListener("click", (function() {
+          if (self.isMobileDevice() && navigator.share) {
+            navigator.share({
+              text: self.textToShare,
+              url: "https://donotfindthefox.com"
+            })
+          } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(`${self.textToShare}. Try it at www.donotfindthefox.com`).then((function() {
+              copiedDiv.style.display = "block";
+              copiedDiv.style.opacity = 1;
+              setTimeout((function() {
+                copiedDiv.style.opacity = 0
+              }), 250);
+              setTimeout((function() {
+                copiedDiv.style.display = "none"
+              }), 3e3)
+            }))
+          }
+        }))
+      };
+      d.prototype.checkFull = function(boardState) {
+        const boardSize = boardState[0].length;
+        for (let i = 0; i < boardState.length; i++) {
+          for (let j = 0; j < boardSize; j++) {
+            if (boardState[i][j] == null) return false
+          }
+        }
+        return true
+      };
+    </script>
+    <script>
+      var d = window.Dnftf;
+      d.achievementsKey = "dnftf-achievements";
+      d.prototype.getAchievements = function() {
+        var ach = localStorage.getItem(d.achievementsKey);
+        if (!ach) {
+          localStorage.setItem(d.achievementsKey, JSON.stringify({}));
+          ach = localStorage.getItem(d.achievementsKey)
+        }
+        return JSON.parse(ach)
+      };
+      d.prototype.saveAchievements = function(achievements) {
+        localStorage.setItem(d.achievementsKey, JSON.stringify(achievements))
+      };
+      d.prototype.unlockAchievement = function(key) {
+        this.achievementModalStale = true;
+        const achievements = this.getAchievements();
+        if (achievements[key]) return;
+        const now = (new Date).toISOString();
+        achievements[key] = {
+          got: now
+        };
+        this.saveAchievements(achievements);
+        document.getElementById("acnotif").style.display = "block";
+        this.achievementPopup(key)
+      };
+      d.prototype.achievementPopup = async function(key) {
+        try {
+          const acList = document.getElementById("acList");
+          const achievements = this.getAchievements();
+          const data = await this.fetchAchievementsData();
+          const popup = document.createElement("div");
+          popup.className = "ach-pop";
+          const achElement = document.createElement("div");
+          achElement.className = "ach got";
+          const iconElement = document.createElement("div");
+          iconElement.className = "ach-icon";
+          iconElement.innerHTML = `
+																																										<i class="bx ${data[key].icon}"></i>`;
+          const textElement = document.createElement("div");
+          textElement.className = "ach-txt";
+          textElement.innerHTML = `
+																																										<h4>${data[key].title}</h4>
+																																										<p>${data[key].desc}</p>`;
+          achElement.appendChild(iconElement);
+          achElement.appendChild(textElement);
+          popup.appendChild(achElement);
+          document.body.appendChild(popup);
+          setTimeout((() => {
+            popup.remove()
+          }), 5e3)
+        } catch (error) {
+          console.error("Error creating achievement alert:", error)
+        }
+      };
+      d.prototype.hasAchievement = function(achievements, key) {
+        return !!achievements[key]
+      };
+      d.prototype.wipeAchievements = function() {
+        localStorage.clear()
+      };
+      d.prototype.fetchAchievementsData = async function() {
+        try {
+          const response = await fetch("/achievements");
+          if (!response.ok) {
+            throw new Error(`Failed to fetch achievements: ${response.statusText}`)
+          }
+          return await response.json()
+        } catch (error) {
+          console.error("Error fetching achievements data:", error);
+          throw error
+        }
+      };
+      d.prototype.populateAchievements = async function() {
+        try {
+          const acList = document.getElementById("acList");
+          const achievements = this.getAchievements();
+          const data = await this.fetchAchievementsData();
+          acList.innerHTML = "";
+          for (const [key, value] of Object.entries(data)) {
+            if (value.bob && !this.hasItem("trophy")) continue;
+            const achievementElement = document.createElement("div");
+            achievementElement.classList.add("ach");
+            if (this.hasAchievement(achievements, key)) {
+              achievementElement.classList.add("got")
+            }
+            const iconElement = document.createElement("div");
+            iconElement.classList.add("ach-icon");
+            if (value.bob) iconElement.classList.add("ach-bob");
+            iconElement.innerHTML = `
+																																										<i class='bx ${value.icon||"bxs-trophy"}'></i>`;
+            const textElement = document.createElement("div");
+            textElement.classList.add("ach-txt");
+            textElement.innerHTML = `\n        
+																																										<h4>${value.title}</h4>\n        
+																																										<p>${value.desc}</p>\n      `;
+            achievementElement.appendChild(iconElement);
+            achievementElement.appendChild(textElement);
+            acList.appendChild(achievementElement)
+          }
+          this.achievementModalStale = false
+        } catch (error) {
+          console.error("Error populating achievements:", error)
+        }
+      };
+      d.prototype.setupHeader = function() {
+        const self = this;
+        const acOpen = document.getElementById("acOpen");
+        const acClose = document.getElementById("acClose");
+        const acOver = document.getElementById("acOver");
+        this.achievementModalStale = true;
+        acOpen.addEventListener("click", (() => {
+          acOver.classList.add("active");
+          if (self.achievementModalStale) {
+            self.populateAchievements()
+          }
+          document.getElementById("acnotif").style.display = "none"
+        }));
+        acClose.addEventListener("click", (() => {
+          acOver.classList.remove("active")
+        }));
+        acOver.addEventListener("click", (e => {
+          if (e.target === acOver) {
+            acOver.classList.remove("active")
+          }
+        }));
+        const mnOpen = document.getElementById("mnOpen");
+        const mnClose = document.getElementById("mnClose");
+        const mnOver = document.getElementById("mnOver");
+        mnOpen.addEventListener("click", (() => {
+          mnOver.classList.add("active")
+        }));
+        mnClose.addEventListener("click", (() => {
+          mnOver.classList.remove("active")
+        }));
+        mnOver.addEventListener("click", (e => {
+          if (e.target === mnOver) {
+            mnOver.classList.remove("active")
+          }
+        }))
+      };
+      d.prototype.buyItem = function(itemId) {
+        localStorage.setItem("shop:" + itemId, "true");
+        this.achievementModalStale = true;
+        this.hasItemCache[itemId] = true;
+        this.enabledItems[itemId] = true;
+        if (this.itemRack[itemId]) {
+          this.itemRack[itemId].style.display = "block";
+          this.itemRack[itemId].classList.remove("disabled")
+        }
+      };
+      d.prototype.hasItem = function(itemId) {
+        this.hasItemCache = {};
+        if (!this.hasItemCache[itemId]) this.hasItemCache[itemId] = localStorage.getItem("shop:" + itemId) === "true";
+        return this.hasItemCache[itemId]
+      };
+      d.prototype.hasItemAndEnabled = function(itemId) {
+        this.enabledItems = this.enabledItems || {};
+        return this.enabledItems[itemId] && this.hasItem(itemId)
+      };
+      d.prototype.disableItem = function(itemId) {
+        this.enabledItems = this.enabledItems || {};
+        this.enabledItems[itemId] = false;
+        this.itemRack[itemId].classList.add("disabled")
+      };
+      d.prototype.enableItem = function(itemId) {
+        this.enabledItems = this.enabledItems || {};
+        this.enabledItems[itemId] = true;
+        this.itemRack[itemId].classList.remove("disabled")
+      };
+      d.prototype.setupItemRack = function() {
+        this.enabledItems = this.enabledItems || {};
+        this.itemRack = {};
+        const self = this;
+        const itemRackEl = document.getElementById("itemrack");
+        itemRackEl.querySelectorAll(".itemri").forEach((function(item) {
+          self.itemRack[item.dataset.itemrack] = item;
+          if (!self.hasItem(item.dataset.itemrack)) item.style.display = "none";
+          if (self.enabledItems[item.dataset.itemrack]) {
+            item.classList.remove("disabled")
+          } else {
+            item.classList.add("disabled")
+          }
+          item.addEventListener("click", (function(e) {
+            if (self.enabledItems[item.dataset.itemrack]) {
+              self.disableItem(item.dataset.itemrack)
+            } else {
+              self.enableItem(item.dataset.itemrack)
+            }
+            e.stopPropagation()
+          }))
+        }))
+      };
+    </script>
+    <script>
+      var d = window.Dnftf;
+      d.prototype.postResult = function(game, stat, score) {
+        const highscoreData = {
+          game: game,
+          stat: stat,
+          score: score
+        };
+        fetch("/result", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(highscoreData)
+        }).then((response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+          return response.json()
+        })).catch((error => {
+          console.error("Error submitting result:", error)
+        }))
+      };
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", (function() {
+        const boardSize = 4;
+        const successChance = .1265;
+        var d = new window.Dnftf;
+        let textToShare = "";
+        let tileTypes = ["f1", "f2", "f3", "f4", "f5", "x1", "x2", "x3", "x4", "x5", "o1", "o2", "o3", "o4", "o5", "o6"];
+        let placedTiles = [];
+        let gameHistory = [];
+        let lbThreshold = undefined;
+        const countries = {
+          ad: "Andorra",
+          ae: "United Arab Emirates",
+          af: "Afghanistan",
+          ag: "Antigua and Barbuda",
+          ai: "Anguilla",
+          al: "Albania",
+          am: "Armenia",
+          ao: "Angola",
+          aq: "Antarctica",
+          ar: "Argentina",
+          as: "American Samoa",
+          at: "Austria",
+          au: "Australia",
+          aw: "Aruba",
+          ax: "Åland Islands",
+          az: "Azerbaijan",
+          ba: "Bosnia and Herzegovina",
+          bb: "Barbados",
+          bd: "Bangladesh",
+          be: "Belgium",
+          bf: "Burkina Faso",
+          bg: "Bulgaria",
+          bh: "Bahrain",
+          bi: "Burundi",
+          bj: "Benin",
+          bl: "Saint Barthélemy",
+          bm: "Bermuda",
+          bn: "Brunei",
+          bo: "Bolivia",
+          bq: "Caribbean Netherlands",
+          br: "Brazil",
+          bs: "Bahamas",
+          bt: "Bhutan",
+          bv: "Bouvet Island",
+          bw: "Botswana",
+          by: "Belarus",
+          bz: "Belize",
+          ca: "Canada",
+          cc: "Cocos (Keeling) Islands",
+          cd: "DR Congo",
+          cf: "Central African Republic",
+          cg: "Republic of the Congo",
+          ch: "Switzerland",
+          ci: "Côte d'Ivoire (Ivory Coast)",
+          ck: "Cook Islands",
+          cl: "Chile",
+          cm: "Cameroon",
+          cn: "China",
+          co: "Colombia",
+          cr: "Costa Rica",
+          cu: "Cuba",
+          cv: "Cape Verde",
+          cw: "Curaçao",
+          cx: "Christmas Island",
+          cy: "Cyprus",
+          cz: "Czechia",
+          de: "Germany",
+          dj: "Djibouti",
+          dk: "Denmark",
+          dm: "Dominica",
+          do: "Dominican Republic",
+          dz: "Algeria",
+          ec: "Ecuador",
+          ee: "Estonia",
+          eg: "Egypt",
+          eh: "Western Sahara",
+          er: "Eritrea",
+          es: "Spain",
+          et: "Ethiopia",
+          eu: "European Union",
+          fi: "Finland",
+          fj: "Fiji",
+          fk: "Falkland Islands",
+          fm: "Micronesia",
+          fo: "Faroe Islands",
+          fr: "France",
+          ga: "Gabon",
+          gb: "United Kingdom",
+          ag: "Antigua",
+          gd: "Grenada",
+          ge: "Georgia",
+          gf: "French Guiana",
+          gg: "Guernsey",
+          gh: "Ghana",
+          gi: "Gibraltar",
+          gl: "Greenland",
+          gm: "Gambia",
+          gn: "Guinea",
+          gp: "Guadeloupe",
+          gq: "Equatorial Guinea",
+          gr: "Greece",
+          gs: "South Georgia",
+          gt: "Guatemala",
+          gu: "Guam",
+          gw: "Guinea-Bissau",
+          gy: "Guyana",
+          hk: "Hong Kong",
+          hm: "Heard Island and McDonald Islands",
+          hn: "Honduras",
+          hr: "Croatia",
+          ht: "Haiti",
+          hu: "Hungary",
+          id: "Indonesia",
+          ie: "Ireland",
+          il: "Israel",
+          im: "Isle of Man",
+          in : "India",
+          io: "British Indian Ocean Territory",
+          iq: "Iraq",
+          ir: "Iran",
+          is: "Iceland",
+          it: "Italy",
+          je: "Jersey",
+          jm: "Jamaica",
+          jo: "Jordan",
+          jp: "Japan",
+          ke: "Kenya",
+          kg: "Kyrgyzstan",
+          kh: "Cambodia",
+          ki: "Kiribati",
+          km: "Comoros",
+          kn: "Saint Kitts and Nevis",
+          kp: "North Korea",
+          kr: "South Korea",
+          kw: "Kuwait",
+          ky: "Cayman Islands",
+          kz: "Kazakhstan",
+          la: "Laos",
+          lb: "Lebanon",
+          lc: "Saint Lucia",
+          li: "Liechtenstein",
+          lk: "Sri Lanka",
+          lr: "Liberia",
+          ls: "Lesotho",
+          lt: "Lithuania",
+          lu: "Luxembourg",
+          lv: "Latvia",
+          ly: "Libya",
+          ma: "Morocco",
+          mc: "Monaco",
+          md: "Moldova",
+          me: "Montenegro",
+          mf: "Saint Martin",
+          mg: "Madagascar",
+          mh: "Marshall Islands",
+          mk: "North Macedonia",
+          ml: "Mali",
+          mm: "Myanmar",
+          mn: "Mongolia",
+          mo: "Macau",
+          mp: "Northern Mariana Islands",
+          mq: "Martinique",
+          mr: "Mauritania",
+          ms: "Montserrat",
+          mt: "Malta",
+          mu: "Mauritius",
+          mv: "Maldives",
+          mw: "Malawi",
+          mx: "Mexico",
+          my: "Malaysia",
+          mz: "Mozambique",
+          na: "Namibia",
+          nc: "New Caledonia",
+          ne: "Niger",
+          nf: "Norfolk Island",
+          ng: "Nigeria",
+          ni: "Nicaragua",
+          nl: "Netherlands",
+          no: "Norway",
+          np: "Nepal",
+          nr: "Nauru",
+          nu: "Niue",
+          nz: "New Zealand",
+          om: "Oman",
+          pa: "Panama",
+          pe: "Peru",
+          pf: "French Polynesia",
+          pg: "Papua New Guinea",
+          ph: "Philippines",
+          pk: "Pakistan",
+          pl: "Poland",
+          pm: "Saint Pierre and Miquelon",
+          pn: "Pitcairn Islands",
+          pr: "Puerto Rico",
+          ps: "Palestine",
+          pt: "Portugal",
+          pw: "Palau",
+          py: "Paraguay",
+          qa: "Qatar",
+          re: "Réunion",
+          ro: "Romania",
+          rs: "Serbia",
+          ru: "Russia",
+          rw: "Rwanda",
+          sa: "Saudi Arabia",
+          sb: "Solomon Islands",
+          sc: "Seychelles",
+          sd: "Sudan",
+          se: "Sweden",
+          sg: "Singapore",
+          sh: "Saint Helena, Ascension and Tristan da Cunha",
+          si: "Slovenia",
+          sj: "Svalbard and Jan Mayen",
+          sk: "Slovakia",
+          sl: "Sierra Leone",
+          sm: "San Marino",
+          sn: "Senegal",
+          so: "Somalia",
+          sr: "Suriname",
+          ss: "South Sudan",
+          st: "São Tomé and Príncipe",
+          sv: "El Salvador",
+          sx: "Sint Maarten",
+          sy: "Syria",
+          sz: "Eswatini (Swaziland)",
+          tc: "Turks and Caicos Islands",
+          td: "Chad",
+          tf: "French Southern and Antarctic Lands",
+          tg: "Togo",
+          th: "Thailand",
+          tj: "Tajikistan",
+          tk: "Tokelau",
+          tl: "Timor-Leste",
+          tm: "Turkmenistan",
+          tn: "Tunisia",
+          to: "Tonga",
+          tr: "Turkey",
+          tt: "Trinidad and Tobago",
+          tv: "Tuvalu",
+          tw: "Taiwan",
+          tz: "Tanzania",
+          ua: "Ukraine",
+          ug: "Uganda",
+          um: "United States Minor Outlying Islands",
+          un: "United Nations",
+          us: "United States",
+          uy: "Uruguay",
+          uz: "Uzbekistan",
+          va: "Vatican City (Holy See)",
+          vc: "Saint Vincent and the Grenadines",
+          ve: "Venezuela",
+          vg: "British Virgin Islands",
+          vi: "United States Virgin Islands",
+          vn: "Vietnam",
+          vu: "Vanuatu",
+          wf: "Wallis and Futuna",
+          ws: "Samoa",
+          xk: "Kosovo",
+          ye: "Yemen",
+          yt: "Mayotte",
+          za: "South Africa",
+          zm: "Zambia",
+          zw: "Zimbabwe"
+        };
+
+        function splitmix32(a) {
+          return function() {
+            a |= 0;
+            a = a + 2654435769 | 0;
+            let t = a ^ a >>> 16;
+            t = Math.imul(t, 569420461);
+            t = t ^ t >>> 15;
+            t = Math.imul(t, 1935289751);
+            return ((t = t ^ t >>> 15) >>> 0) / 4294967296
+          }
+        }
+        let nextSeed = undefined;
+
+        function shuffle(array) {
+          const seed = nextSeed === undefined ? Math.floor(Math.random() * 4294967296) : nextSeed;
+          gameHistory.push({
+            seed: seed,
+            moves: []
+          });
+          const prng = splitmix32(seed);
+          nextSeed = Math.floor(prng() * 4294967296);
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(prng() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]
+          }
+        }
+        shuffle(tileTypes);
+        let currentTileIndex = 0;
+        let totalAttempts = 0;
+        const totalTiles = boardSize * boardSize;
+        let gameOver = false;
+        const startMessage = document.getElementById("start-message");
+        const endMessage = document.getElementById("end-message");
+        const boardContainer = document.getElementById("board-container");
+        const attemptsDiv = document.getElementById("attempts");
+        const backwardsTiles = document.querySelectorAll(".b");
+        const resultText = document.getElementById("result");
+        const compareText = document.getElementById("compare");
+        const shareButton = document.getElementById("share");
+        const copiedDiv = document.getElementById("copied");
+        const restartBtn = document.getElementById("restart");
+        const submitForm = document.querySelector(".submiths");
+        backwardsTiles.forEach((function(el, i) {
+          el.dataset.tileIndex = i
+        }));
+        let boardState = [
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null]
+        ];
+        const directions = [{
+          dx: -1,
+          dy: 0
+        }, {
+          dx: -1,
+          dy: 1
+        }, {
+          dx: 0,
+          dy: 1
+        }, {
+          dx: 1,
+          dy: 1
+        }, {
+          dx: 1,
+          dy: 0
+        }, {
+          dx: 1,
+          dy: -1
+        }, {
+          dx: 0,
+          dy: -1
+        }, {
+          dx: -1,
+          dy: -1
+        }];
+
+        function checkForFox(boardState) {
+          const sequencesFound = [];
+          const wordsToCheck = ["FOX", "XOF"];
+          for (let i = 0; i < boardSize; i++) {
+            for (let j = 0; j < boardSize; j++) {
+              if (!boardState[i][j]) continue;
+              for (let dir = 0; dir < directions.length; dir++) {
+                const dx = directions[dir].dx;
+                const dy = directions[dir].dy;
+                const positions = [{
+                  row: i,
+                  col: j
+                }];
+                let word = boardState[i][j];
+                for (let step = 1; step < 3; step++) {
+                  const newRow = i + dx * step;
+                  const newCol = j + dy * step;
+                  if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
+                    const nextLetter = boardState[newRow][newCol];
+                    if (!nextLetter) break;
+                    word += nextLetter;
+                    positions.push({
+                      row: newRow,
+                      col: newCol
+                    })
+                  } else {
+                    break
+                  }
+                }
+                if (word.length === 3 && wordsToCheck.includes(word)) {
+                  sequencesFound.push(positions)
+                }
+              }
+            }
+          }
+          return sequencesFound
+        }
+
+        function randomiseBackwardsTiles() {
+          backwardsTiles.forEach((function(el) {
+            const jiggleX = Math.floor(Math.random() * 5) - 2;
+            const jiggleY = Math.floor(Math.random() * 5) - 2;
+            const jiggleRot = Math.floor(Math.random() * 15) - 7;
+            el.style.transform = `rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`;
+            const rotate = [0, 90, -90, 180][Math.floor(Math.random() * 4)];
+            el.style.rotate = `${rotate}deg`;
+            el.style.visibility = "visible";
+            if (el.dataset.flippedTo) {
+              el.classList.remove(el.dataset.flippedTo);
+              delete el.dataset.flippedTo
+            }
+          }))
+        }
+
+        function resetGame() {
+          placedTiles = [];
+          currentTileIndex = 0;
+          gameOver = false;
+          textToShare = "";
+          tileTypes = ["f1", "f2", "f3", "f4", "f5", "x1", "x2", "x3", "x4", "x5", "o1", "o2", "o3", "o4", "o5", "o6"];
+          shuffle(tileTypes);
+          randomiseBackwardsTiles();
+          boardState = [
+            [null, null, null, null],
+            [null, null, null, null],
+            [null, null, null, null],
+            [null, null, null, null]
+          ];
+          for (let i = 1; i <= totalTiles; i++) {
+            const tile = document.getElementById("t" + i);
+            tile.className = "t t" + i;
+            tile.style.visibility = "hidden";
+            tile.style.transform = ""
+          }
+          startMessage.style.display = "none";
+          endMessage.style.display = "none";
+          submitForm.style.display = "none";
+          document.querySelector(".hserr").textContent = "";
+          boardContainer.classList.remove("gameover");
+          incrementTally()
+        }
+
+        function incrementTally() {
+          totalAttempts += 1;
+          const tallies = attemptsDiv.getElementsByClassName("tally");
+          let currentTally;
+          if (tallies.length === 0) {
+            currentTally = createNewTally();
+            attemptsDiv.appendChild(currentTally)
+          } else {
+            currentTally = tallies[tallies.length - 1]
+          }
+          const marks = currentTally.getElementsByClassName("mark");
+          let marksVisible = 0;
+          for (let i = 0; i < marks.length; i++) {
+            if (!marks[i].classList.contains("hidden")) {
+              marksVisible++
+            }
+          }
+          if (marksVisible < 5) {
+            marks[marksVisible].classList.remove("hidden")
+          } else {
+            currentTally = createNewTally();
+            attemptsDiv.appendChild(currentTally);
+            currentTally.getElementsByClassName("mark")[0].classList.remove("hidden")
+          }
+        }
+
+        function createNewTally() {
+          const tally = document.createElement("div");
+          tally.className = "tally";
+          for (let i = 1; i <= 5; i++) {
+            const mark = document.createElement("div");
+            mark.className = `mark mark${i} hidden`;
+            const jiggleY = Math.floor(Math.random() * 5) - 2;
+            const jiggleRot = Math.floor(Math.random() * 3) - 1;
+            mark.style.transform = `rotate(${jiggleRot}deg) translateY(${jiggleY}px)`;
+            tally.appendChild(mark)
+          }
+          return tally
+        }
+        backwardsTiles.forEach((function(el) {
+          el.addEventListener("click", (function() {
+            placeTile(el)
+          }))
+        }));
+
+        function goConfetti() {
+          function fire(particleRatio, opts) {
+            confetti(Object.assign({}, {
+              origin: {
+                y: .7
+              }
+            }, opts, {
+              particleCount: Math.floor(200 * particleRatio)
+            }))
+          }
+          fire(.25, {
+            spread: 26,
+            startVelocity: 55
+          });
+          fire(.2, {
+            spread: 60
+          });
+          fire(.35, {
+            spread: 100,
+            decay: .91,
+            scalar: .8
+          });
+          fire(.1, {
+            spread: 120,
+            startVelocity: 25,
+            decay: .92,
+            scalar: 1.2
+          });
+          fire(.1, {
+            spread: 120,
+            startVelocity: 45
+          })
+        }
+
+        function isMobileDevice() {
+          return /Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)
+        }
+
+        function flipTile(el) {
+          if (el.dataset.flippedTo) return;
+          const tileType = tileTypes[el.dataset.tileIndex];
+          el.dataset.flippedTo = tileType;
+          el.classList.add(tileType);
+          el.style.rotate = "0deg"
+        }
+
+        function placeTile(el) {
+          const i = parseInt(el.dataset.tileIndex);
+          if (placedTiles[i]) return;
+          if (gameOver) {
+            flipTile(el);
+            return
+          }
+          startMessage.style.display = "none";
+          el.style.visibility = "hidden";
+          const tileNumber = currentTileIndex + 1;
+          const tile = document.getElementById("t" + tileNumber);
+          const tileType = tileTypes[i];
+          tile.classList.add(tileType);
+          tile.style.visibility = "visible";
+          placedTiles[i] = true;
+          const jiggleX = Math.floor(Math.random() * 5) - 1;
+          const jiggleY = Math.floor(Math.random() * 5) - 1;
+          const jiggleRot = Math.floor(Math.random() * 5) - 2;
+          tile.style.transform = `rotate(${jiggleRot}deg) translateX(${jiggleX}px) translateY(${jiggleY}px)`;
+          gameHistory[gameHistory.length - 1].moves.push(i);
+          const row = Math.floor(currentTileIndex / boardSize);
+          const col = currentTileIndex % boardSize;
+          boardState[row][col] = tileType[0].toUpperCase();
+          const sequencesFound = checkForFox(boardState);
+          if (sequencesFound.length > 0) {
+            sequencesFound.forEach((sequence => {
+              sequence.forEach((pos => {
+                const failedTileNumber = pos.row * boardSize + pos.col + 1;
+                const failedTile = document.getElementById("t" + failedTileNumber);
+                failedTile.classList.add("failed")
+              }))
+            }));
+            gameOver = true;
+            boardContainer.classList.add("gameover");
+            startMessage.textContent = "Bad luck! 🦊 Tap the board to try again.";
+            startMessage.classList.add("retry");
+            startMessage.style.display = "block";
+            if (sequencesFound.length > 1) d.unlockAchievement("classic-twofox");
+            return
+          }
+          currentTileIndex++;
+          if (currentTileIndex >= totalTiles) {
+            endMessage.style.display = "block";
+            restartBtn.style.display = "block";
+            resultText.textContent = `${totalAttempts} attempt${totalAttempts>1?"s":""}`;
+            const chanceofDoingWorse = Math.pow(1 - successChance, totalAttempts);
+            if (chanceofDoingWorse < .1) {
+              compareText.textContent = `You were quite unlucky! ${Math.round((1-chanceofDoingWorse)*1e3,1)/10}% of people won before this point 😭`
+            } else {
+              compareText.textContent = `That's better than ${Math.round(chanceofDoingWorse*100)}% of people!`
+            }
+            textToShare = `I completed the Do Not Find The Fox challenge in ${totalAttempts} attempts. Can you do better? 🦊`;
+            if (totalAttempts >= lbThreshold) {
+              submitForm.style.display = "block"
+            }
+            goConfetti();
+            d.unlockAchievement("classic-win");
+            if (totalAttempts == 1) d.unlockAchievement("classic-1");
+            d.postResult("classic", "attempts", totalAttempts)
+          }
+        }
+
+        function updateLeaderboard() {
+          fetch("/highscores").then((response => response.json())).then((data => {
+            const todayContainer = document.querySelector('.lboard[data-time="today"]');
+            const alltimeContainer = document.querySelector('.lboard[data-time="alltime"]');
+            todayContainer.innerHTML = "";
+            alltimeContainer.innerHTML = "";
+
+            function renderLeaderboard(container, entries) {
+              entries.forEach((entry => {
+                const lboardEntry = document.createElement("div");
+                lboardEntry.classList.add("lboarde");
+                const flagCode = countries[entry.flag] ? entry.flag : "ad";
+                const flagImg = document.createElement("img");
+                flagImg.src = `https://flagcdn.com/56x42/${flagCode}.png`;
+                const scoreSpan = document.createElement("span");
+                scoreSpan.classList.add("lbs");
+                scoreSpan.textContent = entry.score;
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = entry.name;
+                lboardEntry.appendChild(flagImg);
+                lboardEntry.appendChild(scoreSpan);
+                lboardEntry.appendChild(nameSpan);
+                container.appendChild(lboardEntry)
+              }))
+            }
+            if (data.classic.today) {
+              renderLeaderboard(todayContainer, data.classic.today);
+              if (data.classic.today.length < 10) {
+                lbThreshold = 0
+              } else {
+                lbThreshold = data.classic.today[data.classic.today.length - 1].score
+              }
+            }
+            if (data.classic.alltime) {
+              renderLeaderboard(alltimeContainer, data.classic.alltime)
+            }
+          })).catch((error => {
+            console.error("Error fetching the leaderboard:", error)
+          }))
+        }
+
+        function populateCountryOptions() {
+          const selectElement = document.getElementById("countryinp");
+          selectElement.innerHTML = "";
+          const sortedCountries = Object.entries(countries).sort(((a, b) => a[1].localeCompare(b[1])));
+          sortedCountries.forEach((([code, name]) => {
+            const option = document.createElement("option");
+            option.value = code;
+            option.textContent = name;
+            selectElement.appendChild(option)
+          }))
+        }
+        randomiseBackwardsTiles();
+        incrementTally();
+        populateCountryOptions();
+        updateLeaderboard();
+        boardContainer.addEventListener("click", (function() {
+          if (gameOver) {
+            resetGame();
+            return
+          }
+        }));
+        restartBtn.addEventListener("click", (function() {
+          totalAttempts = 0;
+          attemptsDiv.innerHTML = "";
+          restartBtn.style.display = "none";
+          gameHistory = [];
+          resetGame()
+        }));
+        shareButton.addEventListener("click", (function() {
+          if (isMobileDevice() && navigator.share) {
+            navigator.share({
+              text: textToShare,
+              url: "https://donotfindthefox.com"
+            })
+          } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(`${textToShare}. Try it at www.donotfindthefox.com`).then((function() {
+              copiedDiv.style.display = "block";
+              copiedDiv.style.opacity = 1;
+              setTimeout((function() {
+                copiedDiv.style.opacity = 0
+              }), 250);
+              setTimeout((function() {
+                copiedDiv.style.display = "none"
+              }), 3e3)
+            }))
+          }
+        }));
+        document.getElementById("submitlb").addEventListener("click", (function() {
+          if (lbThreshold === undefined || gameHistory == []) return;
+          const name = document.getElementById("hsname").value;
+          const flag = document.getElementById("countryinp").value;
+          const errorDiv = document.querySelector(".hserr");
+          if (!name || !flag) {
+            errorDiv.textContent = "Please enter a name and select a flag.";
+            return
+          }
+          errorDiv.textContent = "Submitting...";
+          const highscoreData = {
+            name: name,
+            flag: flag,
+            game: gameHistory
+          };
+          fetch("/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(highscoreData)
+          }).then((response => response.json().then((data => ({
+            status: response.status,
+            data: data
+          }))))).then((({
+            status: status,
+            data: data
+          }) => {
+            if (status === 200) {
+              errorDiv.textContent = "Score submitted. It may take a minute to appear on the leaderboard."
+            } else {
+              errorDiv.textContent = data.error || "An unknown error occurred."
+            }
+          })).catch((error => {
+            errorDiv.textContent = "An error occurred while submitting your score.";
+            console.error("Error:", error)
+          }))
+        }));
+        d.setupHeader()
+      }));
+    </script>
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"86bb1d51971a47a7ae5c58d6111f0833","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+  </body>
+</html>
